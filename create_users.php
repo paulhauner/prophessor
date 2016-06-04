@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-$root = dirname(dirname(dirname(__FILE__)));
-require_once $root.'/scripts/__init_script__.php';
+//$root = dirname(dirname(dirname(__FILE__)));
+require_once '/opt/phabricator/scripts/__init_script__.php';
 $table = new PhabricatorUser();
 $any_user = queryfx_one(
   $table->establishConnection('r'),
@@ -14,10 +14,10 @@ if ($is_first_user) {
 }
 
 
-$username = "phpfiletest";
-$realname = "PHP file test";
-$email = "test@email.com";
-$password = "phppassword";
+$username = $argv[1];
+$realname = $argv[3];
+$email = $argv[4];
+$password = $argv[2];
 $is_bot = False;
 $set_admin = False;
 
@@ -35,7 +35,17 @@ $user = id(new PhabricatorUser())->loadOneWhere(
   $username);
 
 //
-// set user name
+// check if user exists
+//
+if($user) {
+  echo pht("The username already exists")."\n";
+  exit(1);
+}
+$user = new PhabricatorUser();
+$user->setUsername($username);
+
+//
+// set name
 //
 $user->setRealName($realname);
 
@@ -69,8 +79,8 @@ $user->openTransaction();
     $editor->createNewUser($user, $email);
 
     $editor->makeAdminUser($user, $set_admin);
-    $editor->makeSystemAgentUser($user, is_bot);
-    $envelope = new PhutilOpaqueEnvelope(password);
+    $editor->makeSystemAgentUser($user, $is_bot);
+    $envelope = new PhutilOpaqueEnvelope($password);
     $editor->changePassword($user, $envelope);
 $user->saveTransaction();
 echo pht('Phinished.')."\n";
