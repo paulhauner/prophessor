@@ -27,6 +27,11 @@ phab_api_templates = {
         "method": "project.create",
         "data": "api.token=" + PHAB_API_TOKEN + "&name=%s&icon=%s&color=%s%s",
         "args": ("name", "icon", "color", "members[]=%s")
+    },
+    "phid_lookup": {
+        "method": "phid.lookup",
+        "data": "api.token=" + PHAB_API_TOKEN + "&%s",
+        "args": ("name[]=%s",)
     }
 }
 
@@ -34,7 +39,7 @@ phab_api_templates = {
 class Call():
     def raw(self, method, data_string):
         print("API CALL:  %s -- %s" % (method, data_string))
-        #return subprocess.check_output(["curl", "-s", PHAB_API_ADDRESS + "/api/" + method, "-d", data_string])
+        return subprocess.check_output(["curl", "-s", PHAB_API_ADDRESS + "/api/" + method, "-d", data_string])
 
     def template(self, template_name, args):
         response = json.loads(self.raw(phab_api_templates[template_name]["method"],

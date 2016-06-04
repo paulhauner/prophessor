@@ -10,10 +10,17 @@ arg_task = sys.argv[1]
 
 class Enroll():
     def __init__(self):
+        # Create users
         users = load_group_membership.from_csv(GROUP_MEMBERS_CSV)
-        self.create_users(users)
-        #groups = load_group_membership.unique_groups(GROUP_MEMBERS_CSV)
-        #self.create_projects(groups)
+        success = self.create_users(users)
+        if success:
+            print('User creation completed successfully.')
+        else:
+            print('User creation failed. Exiting.')
+            #return
+        # Create groups and assign users
+        groups = load_group_membership.unique_groups(GROUP_MEMBERS_CSV)
+        self.create_projects(groups)
 
     def create_users(self, users):
         success = True
@@ -40,7 +47,14 @@ class Enroll():
             if result:
                 group_num = int(result.group(1))
                 group_name = "G%02d-Project-Part1" % (group_num,)
-                phab_project.create(group_name, icon, color)
+
+                usernames = load_group_membership.users_for_group(GROUP_MEMBERS_CSV, group_code)
+                phids = []
+                for u in usernames:
+                    phids.append(phab_user.get_phid_from_username(u))
+                phids = phids + PHAB_SUPER_USER_PHIDS
+
+                phab_project.create(group_name, icon, color, phids)
                 print("Created group: %s" % (group_name,))
             else:
                 print("Skipped: %s" % (group_code,))

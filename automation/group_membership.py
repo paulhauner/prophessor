@@ -4,6 +4,19 @@ class Load():
     """
     Load users, groups and their relations
     """
+    def users_for_group(self, csv_file, group_code):
+        """
+        Return a list of User Names which belong to a group
+        :param csv_file: path to csv file
+        :param group: Group (string)
+        :return: list
+        """
+        groups = self.from_csv(csv_file)
+        results = []
+        for e in groups:
+            if e['Group Code'] == group_code:
+                results.append(e['User Name'])
+        return results
 
     def unique_groups(self, csv_file):
         """
