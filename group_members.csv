@@ -1,11 +1,11 @@
-"Group Code","User Name","Student Id","First Name","Last Name"
-"Project_test_Group_test_1","92160422","","Smith","John"
-"Project_test_Group_test_1","92606545","","Wong","Mary"
-"Project_test_Group_test_2","91620075","","Jones","Lin"
-"Project_test_Group_test_2","91883466","","Ali","Hans"
-"Project_test_Group_test_3","91546617","","Rose","Robert"
-"Project_test_Group_test_3","91966054","","Xu","Jan"
-"Project_test_Group_test_4","91815304","","Berg","James"
-"Project_test_Group_test_4","91836854","","Brown","Amanda"
-"Project_test_Group_test_5","91807424","","Pink","Laura"
-"Project_test_Group_test_5","91813924","","Blue","Scott"
+Group Code,User Name,Student Id,Last Name,First Name,Email,Password
+Project_test_Group_test_1,92160422,,Smith,John,nothing@paulhauner.csd,asdfasdfa
+Project_test_Group_test_1,92606545,,Wong,Mary,nothing@paulhauner.css,gdfghdfg
+Project_test_Group_test_2,91620075,,Jones,Lin,nothing@paulhauner.csa,sghrveve
+Project_test_Group_test_2,91883466,,Ali,Hans,nothing@paulhauner.cff,fgbdcvrt
+Project_test_Group_test_3,91546617,,Rose,Robert,nothing@paulhauner.crt,xgkjttvvd
+Project_test_Group_test_3,91966054,,Xu,Jan,nothing@paulhauner.cds,ergbdfgt
+Project_test_Group_test_4,91815304,,Berg,James,nothing@paulhauner.dfg,dfsvthtte
+Project_test_Group_test_4,91836854,,Brown,Amanda,nothing@paulhauner.uhg,fggcdhjf
+Project_test_Group_test_5,91807424,,Pink,Laura,nothing@paulhauner.qed,dfsvgrht
+Project_test_Group_test_5,91813924,,Blue,Scott,nothing@paulhauner.fcs,

@@ -1,6 +1,22 @@
 #!/usr/bin/env php
 <?php
-//$root = dirname(dirname(dirname(__FILE__)));
+/**
+ *
+ *  This is an adaptation of phabricators bin/accountadmin script
+ *  It will create a new phabricator user with settings appropriate for a student
+ *
+ *  This script assumes phabricator is installed in /opt/
+ *
+ *  This should be run from CLI and takes four arguments in the following order:
+ *  username password realname email
+ *
+ *  Example:
+ *      $ ./create_users.php "paramstest3" "phppassword" "Params3 Name3" "params3@dfadsfadf.com"
+ *
+ *  Author: paul@paulhauner.com
+ *  Also contact: luke@lukeanderson.com.au
+ *
+ */
 require_once '/opt/phabricator/scripts/__init_script__.php';
 $table = new PhabricatorUser();
 $any_user = queryfx_one(
@@ -39,7 +55,7 @@ $user = id(new PhabricatorUser())->loadOneWhere(
 //
 if($user) {
   echo pht("The username already exists")."\n";
-  exit(1);
+  exit(0);
 }
 $user = new PhabricatorUser();
 $user->setUsername($username);
@@ -61,6 +77,7 @@ do {
       echo pht(
         "ERROR: There is already a user with that email address. ".
         "Each user must have a unique email address.\n");
+      exit(1);
     } else {
       break;
     }
@@ -83,4 +100,3 @@ $user->openTransaction();
     $envelope = new PhutilOpaqueEnvelope($password);
     $editor->changePassword($user, $envelope);
 $user->saveTransaction();
-echo pht('Phinished.')."\n";
