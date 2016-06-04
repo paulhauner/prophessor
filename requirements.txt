@@ -1,0 +1,2 @@
+PyMySQL
+more_itertools
