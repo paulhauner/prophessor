@@ -17,7 +17,7 @@ class Enroll():
             print('User creation completed successfully.')
         else:
             print('User creation failed. Exiting.')
-            #return
+            return
         # Create groups and assign users
         groups = load_group_membership.unique_groups(GROUP_MEMBERS_CSV)
         self.create_projects(groups)

@@ -11,10 +11,9 @@
  *  username password realname email
  *
  *  Example:
- *      $ ./create_users.php "paramstest3" "phppassword" "Params3 Name3" "params3@dfadsfadf.com"
+ *      $ ./create_user.php "paramstest3" "phppassword" "Params3 Name3" "params3@dfadsfadf.com"
  *
  *  Author: paul@paulhauner.com
- *  Also contact: luke@lukeanderson.com.au
  *
  */
 require_once '/opt/phabricator/scripts/__init_script__.php';

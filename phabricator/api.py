@@ -32,7 +32,12 @@ phab_api_templates = {
         "method": "phid.lookup",
         "data": "api.token=" + PHAB_API_TOKEN + "&%s",
         "args": ("name[]=%s",)
-    }
+    },
+    "create_repository": {
+        "method": "repository.create",
+        "data": "api.token=" + PHAB_API_TOKEN + "&name=%s&vcs=%s",
+        "args": ("name", "icon")
+    },
 }
 
 
