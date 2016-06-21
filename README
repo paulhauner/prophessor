@@ -1,1 +1,5 @@
 # Phabricator Assessessments Automation
+
+# Dependencies
+
+ - Arcanist

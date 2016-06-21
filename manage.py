@@ -7,9 +7,17 @@ from phabricator.user import user as phab_user
 
 arg_task = sys.argv[1]
 
+class LoadRawDiffs():
+    def go(self, dir):
+        print os.listdir(dir)
+
+
 
 class Enroll():
     def __init__(self):
+        """
+        Initialises the Enroll class. This involves enrolling students and creating projects.
+        """
         # Create users
         users = load_group_membership.from_csv(GROUP_MEMBERS_CSV)
         success = self.create_users(users)
@@ -23,6 +31,11 @@ class Enroll():
         self.create_projects(groups)
 
     def create_users(self, users):
+        """
+        create_users creates student users in Phabricator from a Dict of users.
+        :param users: Dictionary of users.
+        :return: Boolean True if successful.
+        """
         success = True
         for user in users:
             error = phab_user.create(
@@ -41,6 +54,13 @@ class Enroll():
         return success
 
     def create_projects(self, groups, icon="policy", color="red"):
+        """
+        create_project creates projects in Phabricator from a list.
+        :param groups: A unique list of projects.
+        :param icon: String of phab icon name.
+        :param color: String of phab color.
+        :return: None
+        """
         for group_code in groups:
             code_regex = re.compile("Project_gc_Group_gc_(\d+)")
             result = code_regex.search(group_code)
@@ -61,4 +81,7 @@ class Enroll():
 
 if arg_task == 'enroll':
     enroll = Enroll()
+elif arg_task == 'loaddiffs':
+    action = LoadRawDiffs
+    action.do(sys.argv[2])
 
