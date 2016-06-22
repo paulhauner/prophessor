@@ -1,2 +1,2 @@
-PyMySQL
+pymysql
 more_itertools

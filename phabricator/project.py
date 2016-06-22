@@ -2,6 +2,12 @@ from .api import api_call
 
 
 class Project():
+    def get_phid_from_name(self, name):
+        phabed_name = "#%s" % name
+        result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
+        if result:
+            return result[phabed_name]['phid']
+
     def add_user(self, user_phid, project_phid):
         return api_call.template("add_user_to_project", (user_phid, project_phid))
 

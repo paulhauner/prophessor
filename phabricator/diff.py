@@ -18,16 +18,15 @@ class Diff():
         else:
             return -1
 
-    def create_revision(self, diff_id, title):
+    def create_revision(self, diff_id, **kwargs):
         json_data = json.dumps(
             {
                 'diffid': diff_id,
-                'fields': {
-                    'title': title
-                }
+                'fields': kwargs
             }
         )
-        result = arc.call_and_pipe_in(['call-conduit', 'differential.createrevision'], json_data)
-        print(result)
+        json_result = arc.call_and_pipe_in(['call-conduit', 'differential.createrevision'], json_data)
+        result = json.loads(json_result)
+        return result['response']['revisionid']
 
 diff = Diff()
