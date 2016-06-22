@@ -5,7 +5,7 @@ index 6d6f182..033f068
 --- a/dh/__init__.py
 +++ b/dh/__init__.py
 @@ -7,34 +7,91 @@ from lib.helpers import read_hex
- 
+
  # 1536 bit safe prime for Diffie-Hellman key exchange
  # obtained from RFC 3526
 -raw_prime = """FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1
@@ -76,10 +76,10 @@ index 6d6f182..033f068
 +      60C980DD 98EDD3DF FFFFFFFF FFFFFFFF"""
 +
  prime = read_hex(raw_prime)
-+generator = 2 
- 
++generator = 2
+
  # Project TODO: write the appropriate code to perform DH key exchange
- 
+
  def create_dh_key():
      # Creates a Diffie-Hellman key
      # Returns (public, private)
@@ -89,7 +89,7 @@ index 6d6f182..033f068
 +    private_key = random.randint(0, int(2**8))
 +    public_key = pow(generator, private_key, prime)
 +    return public_key, private_key
- 
+
  def calculate_dh_secret(their_public, my_private):
      # Calculate the shared secret
 -    shared_secret = their_public * my_private
@@ -116,16 +116,16 @@ index 3ed42bd..6f3baf2
 --- a/lib/comms.py
 +++ b/lib/comms.py
 @@ -1,38 +1,175 @@
-+## At some point in time I managed to fork the project into 2 different files, the result is I had to amalgimate the changes. I tabbed out to make sure I did not miss anything/any notes or comments. 
++## At some point in time I managed to fork the project into 2 different files, the result is I had to amalgimate the changes. I tabbed out to make sure I did not miss anything/any notes or comments.
  import struct
- 
+
 -from Crypto.Cipher import XOR
 -
 +from Crypto.Cipher import ARC4
  from dh import create_dh_key, calculate_dh_secret
 +from Crypto.Cipher import AES
 +from Crypto.Hash import HMAC
-+## Below "crypo utils" was taken from another group to get padding to work properly. It adds the appropriate padding so the block size matches AES. 
++## Below "crypo utils" was taken from another group to get padding to work properly. It adds the appropriate padding so the block size matches AES.
 +## Since is it x923 padding type it adds zeros and the last number is the amount of zeros that it has added.
 +## This method gives away less information about how long your message is as they only know how many blocks you outputted, however if you wanted to make it even more secure you could add larger headers to the file to ensure its lenght does not give away as much information.
 +from lib.crypto_utils import ANSI_X923_pad, ANSI_X923_unpad
@@ -136,7 +136,7 @@ index 3ed42bd..6f3baf2
 +import datetime
 +
 +#AES chosen because it is stronger then DES and triple DES
- 
+
  class StealthConn(object):
 -    def __init__(self, conn, client=False, server=False, verbose=False):
 +    def __init__(self, conn, client=False, server=False, verbose=False, cipher_type="block"):
@@ -152,7 +152,7 @@ index 3ed42bd..6f3baf2
 +        self.sss = 0
 +        self.srs = 0
 +        self.dss = 0
-+        
++
      def initiate_session(self):
          # Perform the initial connection handshake for agreeing on a shared secret
 -
@@ -185,15 +185,15 @@ index 3ed42bd..6f3baf2
 +            self.cipher = AES.new(self.shared_hash, AES.MODE_CBC, IV=self.shared_hash[:16])
 +
 +        ## Renamed send and recieve commands to old_send
- 
+
      def send(self, data):
          if self.cipher:
-+            ## Encode the message else hmac will return errors 
++            ## Encode the message else hmac will return errors
 +            try:
 +                data.decode("ascii")
 +            except UnicodeDecodeError:
 +                msg = bytes(data, "ascii")
-+               ##Attribute error kept throwing, added error to list 
++               ##Attribute error kept throwing, added error to list
 +            except AttributeError:
 +                msg = bytes(data, "ascii")
 +            else:
@@ -203,7 +203,7 @@ index 3ed42bd..6f3baf2
 +            #epoch_time = bytes(epoch_time, "ascii")
 +            #msg = b64encode(epoch_time) + msg
 +            # Overwrited old time code, new time code just uses time since epoch - no additional data coding needed.
-+            ## New time code - Takes the string of the time, then adds it to the message. Passes that over to the other bot, who decodes the message, retrieves the string of time and compares it to the current time. 
++            ## New time code - Takes the string of the time, then adds it to the message. Passes that over to the other bot, who decodes the message, retrieves the string of time and compares it to the current time.
 +            epoch_time = str(datetime.datetime.now())
 +            #print(epoch_time)
 +            #epoch_time = bytes(epoch_time, "ascii")
@@ -234,10 +234,10 @@ index 3ed42bd..6f3baf2
 +                print("Originalish data: {}".format(data))
 +                print("Encryptedish data: {}".format(repr(encrypted_data)))
 +                print("Sending packet of lengthish {}".format(len(encrypted_data)))
-+        ## Else for Self.cipher, not self.verbose, do not tab in, code breaks. 
++        ## Else for Self.cipher, not self.verbose, do not tab in, code breaks.
 +        else:
 +             encrypted_data = data
-+        
++
 +        ## Encode the data's length into an unsigned two byte int ('H')
 +
 +        pkt_len = struct.pack('=H', len(encrypted_data))
@@ -263,7 +263,7 @@ index 3ed42bd..6f3baf2
 +            ## Hmac decode
 +            dst_hmac = b64decode(data[8:32])
 +            ###epoch_time = b64decode(data[32:48])
-+            ## Unpad the message 
++            ## Unpad the message
 +            data = ANSI_X923_unpad(data[32:], AES.block_size)
 +            #print(data)
 +            ## compuate the hmack for this message
@@ -308,7 +308,7 @@ index 3ed42bd..6f3baf2
 @@ -46,7 +183,7 @@ class StealthConn(object):
          self.conn.sendall(pkt_len)
          self.conn.sendall(encrypted_data)
- 
+
 -    def recv(self):
 +    def old_recv(self):
          # Decode the data's length from an unsigned two byte int ('H')

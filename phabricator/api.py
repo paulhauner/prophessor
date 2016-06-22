@@ -38,8 +38,12 @@ phab_api_templates = {
         "data": "api.token=" + PHAB_API_TOKEN + "&name=%s&vcs=%s",
         "args": ("name", "icon")
     },
+    "create_raw_diff": {
+        "method": "differential.createrawdiff",
+        "data": "api.token=" + PHAB_API_TOKEN + "&diff=%s&viewPolicy=%s",
+        "args": ("diff", "view_policy")
+    },
 }
-
 
 class Call():
     def raw(self, method, data_string):

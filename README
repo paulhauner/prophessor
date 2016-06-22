@@ -3,3 +3,10 @@
 # Dependencies
 
  - Arcanist
+
+
+
+
+ # Commands
+
+ sudo docker cp phab_assessments_automation/ phabricatordocker_phabricator_1:/opt/automation
