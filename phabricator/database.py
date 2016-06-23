@@ -14,4 +14,7 @@ class Database():
     def disconnect(self, connection):
         connection.close()
 
+    def commit(self, connection):
+        connection.commit()
+
 db = Database()
