@@ -1,6 +1,4 @@
 import sys
-import re
-import json
 from local_settings import *
 from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
@@ -131,24 +129,24 @@ class CreateProjects():
 # Parse arguments to do stuff
 
 if arg_task == 'enroll':
-    # python manage.py enroll group_members.csv
+    # python proph.py enroll group_members.csv
     action = Enroll()
     action.go(sys.argv[2])
 
 elif arg_task == 'create-projects':
-    # python manage.py create-projects group_members.csv 1234
+    # python proph.py create-projects group_members.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, False)
 
 elif arg_task == 'create-marking-groups':
-    # python manage.py create-marking-groups markers.csv 1234
+    # python proph.py create-marking-groups markers.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, True)
 
 elif arg_task == 'load-diffs':
-    # python manage.py load-diffs diffs/ 1234
+    # python proph.py load-diffs diffs/ 1234
     part = int(sys.argv[3])
     action = LoadRawDiffs()
     action.go(sys.argv[2], part)

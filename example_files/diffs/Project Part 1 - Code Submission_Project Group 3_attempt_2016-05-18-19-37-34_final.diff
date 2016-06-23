@@ -1,0 +1,349 @@
+diff --git a/dh/__init__.py b/dh/__init__.py
+old mode 100644
+new mode 100755
+index 6d6f182..033f068
+--- a/dh/__init__.py
++++ b/dh/__init__.py
+@@ -7,34 +7,91 @@ from lib.helpers import read_hex
+
+ # 1536 bit safe prime for Diffie-Hellman key exchange
+ # obtained from RFC 3526
+-raw_prime = """FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1
+-29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD
+-EF9519B3 CD3A431B 302B0A6D F25F1437 4FE1356D 6D51C245
+-E485B576 625E7EC6 F44C42E9 A637ED6B 0BFF5CB6 F406B7ED
+-EE386BFB 5A899FA5 AE9F2411 7C4B1FE6 49286651 ECE45B3D
+-C2007CB8 A163BF05 98DA4836 1C55D39A 69163FA8 FD24CF5F
+-83655D23 DCA3AD96 1C62F356 208552BB 9ED52907 7096966D
+-670C354E 4ABC9804 F1746C08 CA237327 FFFFFFFF FFFFFFFF"""
++# This raw prime is no good as it is vuneurable to "logjam"
++#
++#raw_prime = """FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1
++#29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD
++#EF9519B3 CD3A431B 302B0A6D F25F1437 4FE1356D 6D51C245
++#E485B576 625E7EC6 F44C42E9 A637ED6B 0BFF5CB6 F406B7ED
++#EE386BFB 5A899FA5 AE9F2411 7C4B1FE6 49286651 ECE45B3D
++#C2007CB8 A163BF05 98DA4836 1C55D39A 69163FA8 FD24CF5F
++#83655D23 DCA3AD96 1C62F356 208552BB 9ED52907 7096966D
++#670C354E 4ABC9804 F1746C08 CA237327 FFFFFFFF FFFFFFFF"""
+ # Convert from the value supplied in the RFC to an integer
++
++#The below raw prime was Taken from a website "https://datatracker.ietf.org/doc/rfc3526/?include_text=1"
++
++raw_prime = """
++      FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1
++      29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD
++      EF9519B3 CD3A431B 302B0A6D F25F1437 4FE1356D 6D51C245
++      E485B576 625E7EC6 F44C42E9 A637ED6B 0BFF5CB6 F406B7ED
++      EE386BFB 5A899FA5 AE9F2411 7C4B1FE6 49286651 ECE45B3D
++      C2007CB8 A163BF05 98DA4836 1C55D39A 69163FA8 FD24CF5F
++      83655D23 DCA3AD96 1C62F356 208552BB 9ED52907 7096966D
++      670C354E 4ABC9804 F1746C08 CA18217C 32905E46 2E36CE3B
++      E39E772C 180E8603 9B2783A2 EC07A28F B5C55DF0 6F4C52C9
++      DE2BCBF6 95581718 3995497C EA956AE5 15D22618 98FA0510
++      15728E5A 8AAAC42D AD33170D 04507A33 A85521AB DF1CBA64
++      ECFB8504 58DBEF0A 8AEA7157 5D060C7D B3970F85 A6E1E4C7
++      ABF5AE8C DB0933D7 1E8C94E0 4A25619D CEE3D226 1AD2EE6B
++      F12FFA06 D98A0864 D8760273 3EC86A64 521F2B18 177B200C
++      BBE11757 7A615D6C 770988C0 BAD946E2 08E24FA0 74E5AB31
++      43DB5BFC E0FD108E 4B82D120 A9210801 1A723C12 A787E6D7
++      88719A10 BDBA5B26 99C32718 6AF4E23C 1A946834 B6150BDA
++      2583E9CA 2AD44CE8 DBBBC2DB 04DE8EF9 2E8EFC14 1FBECAA6
++      287C5947 4E6BC05D 99B2964F A090C3A2 233BA186 515BE7ED
++      1F612970 CEE2D7AF B81BDD76 2170481C D0069127 D5B05AA9
++      93B4EA98 8D8FDDC1 86FFB7DC 90A6C08F 4DF435C9 34028492
++      36C3FAB4 D27C7026 C1D4DCB2 602646DE C9751E76 3DBA37BD
++      F8FF9406 AD9E530E E5DB382F 413001AE B06A53ED 9027D831
++      179727B0 865A8918 DA3EDBEB CF9B14ED 44CE6CBA CED4BB1B
++      DB7F1447 E6CC254B 33205151 2BD7AF42 6FB8F401 378CD2BF
++      5983CA01 C64B92EC F032EA15 D1721D03 F482D7CE 6E74FEF6
++      D55E702F 46980C82 B5A84031 900B1C9E 59E7C97F BEC7E8F3
++      23A97A7E 36CC88BE 0F1D45B7 FF585AC5 4BD407B2 2B4154AA
++      CC8F6D7E BF48E1D8 14CC5ED2 0F8037E0 A79715EE F29BE328
++      06A1D58B B7C5DA76 F550AA3D 8A1FBFF0 EB19CCB1 A313D55C
++      DA56C9EC 2EF29632 387FE8D7 6E3C0468 043E8F66 3F4860EE
++      12BF2D5B 0B7474D6 E694F91E 6DBE1159 74A3926F 12FEE5E4
++      38777CB6 A932DF8C D8BEC4D0 73B931BA 3BC832B6 8D9DD300
++      741FA7BF 8AFC47ED 2576F693 6BA42466 3AAB639C 5AE4F568
++      3423B474 2BF1C978 238F16CB E39D652D E3FDB8BE FC848AD9
++      22222E04 A4037C07 13EB57A8 1A23F0C7 3473FC64 6CEA306B
++      4BCBC886 2F8385DD FA9D4B7F A2C087E8 79683303 ED5BDD3A
++      062B3CF5 B3A278A6 6D2A13F8 3F44F82D DF310EE0 74AB6A36
++      4597E899 A0255DC1 64F31CC5 0846851D F9AB4819 5DED7EA1
++      B1D510BD 7EE74D73 FAF36BC3 1ECFA268 359046F4 EB879F92
++      4009438B 481C6CD7 889A002E D5EE382B C9190DA6 FC026E47
++      9558E447 5677E9AA 9E3050E2 765694DF C81F56E8 80B96E71
++      60C980DD 98EDD3DF FFFFFFFF FFFFFFFF"""
++
+ prime = read_hex(raw_prime)
++generator = 2
+
+ # Project TODO: write the appropriate code to perform DH key exchange
+
+ def create_dh_key():
+     # Creates a Diffie-Hellman key
+     # Returns (public, private)
+-    a = random.randint(0, int(2**8))
+-    return (a, a)
++    # Private key is a, public key is b.
++    private_key = random.randint(0, int(2**8))
++    public_key = pow(generator, private_key, prime)
++    return public_key, private_key
+
+ def calculate_dh_secret(their_public, my_private):
+     # Calculate the shared secret
+-    shared_secret = their_public * my_private
+-
++    shared_secret = pow(their_public, my_private, prime)
++    #check that the shared secret is valid
++    #Do not print shared secret
++    ##print(str(shared_secret))
++    #Take the secret divide by 8 and add one, taken from Tutorial notes.
++    shared_secret = shared_secret.to_bytes((shared_secret.bit_length()//8)+1, byteorder='little')
+     # Hash the value so that:
+     # (a) There's no bias in the bits of the output
+     #     (there may be bias if the shared secret is used raw)
+     # (b) We can convert to raw bytes easily
+     # (c) We could add additional information if we wanted
+     # Feel free to change SHA256 to a different value if more appropriate
+-    shared_hash = SHA256.new(bytes(shared_secret, "ascii")).hexdigest()
++    shared_hash = SHA256.new(shared_secret).hexdigest()
+     return shared_hash
+diff --git a/lib/comms.py b/lib/comms.py
+old mode 100644
+new mode 100755
+index 3ed42bd..6f3baf2
+--- a/lib/comms.py
++++ b/lib/comms.py
+@@ -1,38 +1,175 @@
++## At some point in time I managed to fork the project into 2 different files, the result is I had to amalgimate the changes. I tabbed out to make sure I did not miss anything/any notes or comments.
+ import struct
+
+-from Crypto.Cipher import XOR
+-
++from Crypto.Cipher import ARC4
+ from dh import create_dh_key, calculate_dh_secret
++from Crypto.Cipher import AES
++from Crypto.Hash import HMAC
++## Below "crypo utils" was taken from another group to get padding to work properly. It adds the appropriate padding so the block size matches AES.
++## Since is it x923 padding type it adds zeros and the last number is the amount of zeros that it has added.
++## This method gives away less information about how long your message is as they only know how many blocks you outputted, however if you wanted to make it even more secure you could add larger headers to the file to ensure its lenght does not give away as much information.
++from lib.crypto_utils import ANSI_X923_pad, ANSI_X923_unpad
++from base64 import b64encode, b64decode
++## Importing timedelta and date time so I can add a token of sorts to stop replay attacks
++import calendar
++import time
++import datetime
++
++#AES chosen because it is stronger then DES and triple DES
+
+ class StealthConn(object):
+-    def __init__(self, conn, client=False, server=False, verbose=False):
++    def __init__(self, conn, client=False, server=False, verbose=False, cipher_type="block"):
++        self.shared_hash = b''
++        self.cipher_type = cipher_type
+         self.conn = conn
+         self.cipher = None
+         self.client = client
+         self.server = server
+         self.verbose = verbose
+         self.initiate_session()
+-
++        self.sss = 0
++        self.srs = 0
++        self.dss = 0
++
+     def initiate_session(self):
+         # Perform the initial connection handshake for agreeing on a shared secret
+-
+-        ### TODO: Your code here!
++        # TODO: Your code here!
+         # This can be broken into code run just on the server or just on the client
+         if self.server or self.client:
+             my_public_key, my_private_key = create_dh_key()
+-            # Send them our public key
+-            self.send(bytes(str(my_public_key), "ascii"))
+-            # Receive their public key
+-            their_public_key = int(self.recv())
++            # Send them our public key, using the old command given
++            self.old_send(bytes(str(my_public_key), "ascii"))
++            # Receive their public key, using the old command given
++            their_public_key = int(self.old_recv())
+             # Obtain our shared secret
+-            shared_hash = calculate_dh_secret(their_public_key, my_private_key)
+-            print("Shared hash: {}".format(shared_hash))
+-
++            self.shared_hash = calculate_dh_secret(their_public_key, my_private_key).encode()
++            print("Shared hash: {}".format(self.shared_hash))
+         # Default XOR algorithm can only take a key of length 32
+-        self.cipher = XOR.new(shared_hash[:4])
++        # self.cipher = XOR.new(shared_hash[:4])
++        # XOR for the largest amount 4 is not enough.
++        # Self cipher checkscreates AES mode though IV with self shared hash.
++        ## Chose the largest possible number for key length... for security
++            self.shared_hash = self.shared_hash[:32]
++            self.cipher = AES.new(self.shared_hash, AES.MODE_CBC, IV=self.shared_hash[:16])
++
++        ## Renamed send and recieve commands to old_send
+
+     def send(self, data):
+         if self.cipher:
++            ## Encode the message else hmac will return errors
++            try:
++                data.decode("ascii")
++            except UnicodeDecodeError:
++                msg = bytes(data, "ascii")
++               ##Attribute error kept throwing, added error to list
++            except AttributeError:
++                msg = bytes(data, "ascii")
++            else:
++                msg = data
++            #epoch_time = time.strftime("%Y-%m-%d %H:%M")
++            #print (epoch_time)
++            #epoch_time = bytes(epoch_time, "ascii")
++            #msg = b64encode(epoch_time) + msg
++            # Overwrited old time code, new time code just uses time since epoch - no additional data coding needed.
++            ## New time code - Takes the string of the time, then adds it to the message. Passes that over to the other bot, who decodes the message, retrieves the string of time and compares it to the current time.
++            epoch_time = str(datetime.datetime.now())
++            #print(epoch_time)
++            #epoch_time = bytes(epoch_time, "ascii")
++            #msg = epoch_time + msg
++            ##msg = epoch_time.encode() + msg
++            epoch_time = str.encode(epoch_time)
++            msg = epoch_time + msg
++            self.sss += len(msg)
++            #Above takes the length of the message.
++            #print(msg)
++            ##Old spot for the code, broke the length counter.
++            ##msg = epoch_time.to_bytes(16,'big') + msg
++            #hmac the message, use the self shared hash.
++            hmac = HMAC.new(key=self.shared_hash, msg=msg).digest()
++            #TypeError: 'int' does not support the buffer interface (code like dss etc) --> Use 'big'
++            #Padding out the data to make it the correct block size.
++            ## Errors when in send mode, echo works fine.
++            ## Fixed errors with ansci check
++            data = ANSI_X923_pad(msg, AES.block_size)
++            ## Add the hmac the message
++            ## Took out time here as encoder could not get 16 bit moved to before the data padding
++            data = b64encode(self.sss.to_bytes(4, 'little')) + b64encode(hmac) + data
++            encrypted_data = self.cipher.encrypt(data)
++            ##Copied from old, changed with ish to see which is being used.
++            ## Not sure the code can ever get here.... apparently it can
++            ## These will print from the send side so we can see the message. Mostly to compare to recieving side.
++            if self.verbose:
++                print("Originalish data: {}".format(data))
++                print("Encryptedish data: {}".format(repr(encrypted_data)))
++                print("Sending packet of lengthish {}".format(len(encrypted_data)))
++        ## Else for Self.cipher, not self.verbose, do not tab in, code breaks.
++        else:
++             encrypted_data = data
++
++        ## Encode the data's length into an unsigned two byte int ('H')
++
++        pkt_len = struct.pack('=H', len(encrypted_data))
++        ## Actual send commands, taken from original send
++        self.conn.sendall(pkt_len)
++        self.conn.sendall(encrypted_data)
++
++        ##do not pass data into this command, that breaks everything
++    def recv(self):
++        ## Decode the data's length from an unsigned two byte int ('H')
++        pkt_len_packed = self.conn.recv(struct.calcsize('=H'))
++        unpacked_contents = struct.unpack('H', pkt_len_packed)
++        pkt_len = unpacked_contents[0]
++        encrypted_data = self.conn.recv(pkt_len)
++        print(encrypted_data)
++        if self.cipher:
++            data = self.cipher.decrypt(encrypted_data)
++            print(data)
++            print(encrypted_data)
++            self.dss = int.from_bytes(b64decode(data[:4]), 'little')
++            ## Taded out the check for decode, as it is not needed. used for checking only.
++            #print(b64decode(data[8:32]))
++            ## Hmac decode
++            dst_hmac = b64decode(data[8:32])
++            ###epoch_time = b64decode(data[32:48])
++            ## Unpad the message
++            data = ANSI_X923_unpad(data[32:], AES.block_size)
++            #print(data)
++            ## compuate the hmack for this message
++            src_hmac = HMAC.new(key=self.shared_hash, msg=data).digest()
++            print(src_hmac)
++            print(dst_hmac)
++            #Checks to see if the message has been tampered with. Comapare hmacs
++            if src_hmac != dst_hmac:
++                print("Error, bad message")
++            self.srs += len(data)
++            if self.srs != self.dss:
++                print("Error, out of order")
++            print(data)
++            Send_time = data[:26]
++            #Send_time = int.from_bytes(Send_time,"big")
++            #Cur_time = int(time.time())
++            Cur_time = str(datetime.datetime.now())
++            print(Cur_time)
++            data = data[26:]
++            Send_time = Send_time.decode()
++            print(Send_time)
++            if Cur_time[:18] != Send_time[:18]:
++                print("Error, out of time")
++            print(data)
++            ## Taken from Old commands, not sure of arrive here, changed with 'could be' to check
++            ## These turn up on send bot side
++            if self.verbose:
++                print("If no error, message has passed checks")
++                print("Receiving packet of length could be {}".format(pkt_len))
++                print("Encrypted data could be: {}".format(repr(encrypted_data)))
++                print("Original data could be: {}".format(data))
++        else:
++            data = encrypted_data
++
++        return data
++
++    def old_send(self, data):
++        if self.cipher:
+             encrypted_data = self.cipher.encrypt(data)
+             if self.verbose:
+                 print("Original data: {}".format(data))
+@@ -46,7 +183,7 @@ class StealthConn(object):
+         self.conn.sendall(pkt_len)
+         self.conn.sendall(encrypted_data)
+
+-    def recv(self):
++    def old_recv(self):
+         # Decode the data's length from an unsigned two byte int ('H')
+         pkt_len_packed = self.conn.recv(struct.calcsize('H'))
+         unpacked_contents = struct.unpack('H', pkt_len_packed)
+diff --git a/lib/crypto_utils.py b/lib/crypto_utils.py
+new file mode 100755
+index 0000000..7c5eb1e
+--- /dev/null
++++ b/lib/crypto_utils.py
+@@ -0,0 +1,27 @@
++# ANSI X.923 pads the message with zeroes
++# The last byte is the number of zeroes added
++# This should be checked on unpadding
++
++
++def ANSI_X923_pad(m, pad_length):
++    # Work out how many bytes need to be added
++    required_padding = pad_length - (len(m) % pad_length)
++    # Use a bytearray so we can add to the end of m
++    #Added the Ascii  to reduce errors. Removed later as it breaks p2p echo
++    b = bytearray(m)
++    # Then k-1 zero bytes, where k is the required padding
++    b.extend(bytes("\x00" * (required_padding-1), "ascii"))
++    # And finally adding the number of padding bytes added
++    b.append(required_padding)
++    return bytes(b)
++
++
++def ANSI_X923_unpad(m, pad_length):
++    # The last byte should represent the number of padding bytes added
++    required_padding = m[-1]
++    # Ensure that there are required_padding - 1 zero bytes
++    if m.count(bytes([0]), -required_padding, -1) == required_padding - 1:
++        return m[:-required_padding]
++    else:
++        # Raise an exception in the case of an invalid padding
++        raise AssertionError("Padding was invalid")
