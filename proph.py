@@ -133,14 +133,14 @@ if arg_task == 'enroll':
     action = Enroll()
     action.go(sys.argv[2])
 
-elif arg_task == 'create-projects':
-    # python proph.py create-projects group_members.csv 1234
+elif arg_task == 'create-student-groups':
+    # python proph.py create-student-groups group_members.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, False)
 
-elif arg_task == 'create-marking-groups':
-    # python proph.py create-marking-groups markers.csv 1234
+elif arg_task == 'create-marker-groups':
+    # python proph.py create-marker-groups markers.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, True)
