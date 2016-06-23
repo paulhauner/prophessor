@@ -27,7 +27,7 @@ class Policy():
         with connection.cursor() as cursor:
             cursor.execute(insert_sql, (new_phid, json.dumps(rules), timestamp, timestamp))
 
-        db.disconnect()
+        db.disconnect(connection)
         return new_phid
 
 policy = Policy()
