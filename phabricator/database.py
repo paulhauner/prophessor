@@ -1,4 +1,4 @@
-import pymysql.cursors
+import pymysql
 from local_settings import PHAB_DB_HOST, PHAB_DB_USER, PHAB_DB_PASSWORD
 
 
