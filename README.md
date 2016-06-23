@@ -14,7 +14,7 @@ This package is biased towards and designed for lectures by Luke Anderson.
 
 # Usage
 
-Commands are executed by running `proph.py` from Python and supply arguments.
+Commands are executed by running `proph.py` from Python with arguments.
 
 For example:
 ```
@@ -33,7 +33,7 @@ The most fail-safe way to run this script is on the Phabricator server, all func
 directly on the Phabricator server with access to the Phab db, Phab PHP files, Arcanist and the RESTful API.
 
 Some configuration is required for each Phabricator instance. All of these settings are available in the
-'local_settings.py' file.
+`local_settings.py` file.
 
 # Commands
 
@@ -48,7 +48,7 @@ _Utilises Phabricator PHP files and must be executed on the Phabricator server_
 
 Creates users based on the information in the specified `<csv file>`.
 
-See `example_files/students.csv` for an example of this file.
+See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py enroll example_files/students.csv`
 
@@ -65,7 +65,7 @@ Create Phab student projects and assigns users to these projects as per the spec
 
 `<project number>` is a number which will be appended to the project name to accommodate for multiple projects per Phabricator instance.
 
-See `example_files/students.csv` for an example of this file.
+See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 
@@ -82,7 +82,7 @@ Create Phab marking projects and assigns users to these projects as per the spec
 
 `<project number>` is a number which will be appended to the project name to accommodate for multiple projects per Phabricator instance.
 
-See `example_files/markers.csv` for an example of this file.
+See `example_files/markers.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
 
