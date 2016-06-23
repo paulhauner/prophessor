@@ -1,5 +1,7 @@
 import os
 
+ARCANIST_LOCATION = "/usr/local/bin/arc"
+
 BASE_DOMAIN = "devphab.paulh.io:8081"
 PHAB_API_ADDRESS = "http://" + BASE_DOMAIN
 

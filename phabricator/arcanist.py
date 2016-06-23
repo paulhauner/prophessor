@@ -1,3 +1,4 @@
+from local_settings import ARCANIST_LOCATION
 from subprocess import Popen, PIPE, STDOUT
 
 class Arcanist():
@@ -8,7 +9,7 @@ class Arcanist():
         :param data_to_be_piped_in: The data to be piped into the function. Should probably be a string?
         :return: The result of the data piping
         """
-        process_params = ['arc'] + args_list
+        process_params = [ARCANIST_LOCATION] + args_list
         process = Popen(process_params, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
         return process.communicate(input=data_to_be_piped_in)[0]
 
