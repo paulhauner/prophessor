@@ -16,6 +16,7 @@ class Diff():
             diff_id = int(regex_result.group(1))
             return diff_id
         else:
+            print(result)
             return -1
 
     def create_revision(self, diff_id, **kwargs):
