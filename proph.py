@@ -41,9 +41,14 @@ class LoadRawDiffs():
             print('Error: Unable to create revision for diff file: %s' % diff_file)
         # this code will only run if we have successfully created a diff & revision
         policy_phid = phab_policy.create_project_policy([project_name])
-        print(revision_id)
-        print(policy_phid)
-
+        if not policy_phid:
+            print("Error: unable to create policy")
+        # this code will only run if we have a policy to add to our new revision
+        phab_diff.set_revision_policy(
+            revision_id=revision_id,
+            view_policy=policy_phid,
+            edit_policy=policy_phid
+        )
 
 
     def create_diff_from_file(self, diff_location):
