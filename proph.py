@@ -140,12 +140,9 @@ class CreateProjects():
 
 def thanks():
     print("")
-    print("(  " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
-    print("Complete.")
+    print("Task complete. (  " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
 
 # Parse arguments to do stuff
-
-thanks()
 
 if arg_task == 'enroll':
     # python proph.py enroll group_members.csv
