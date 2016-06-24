@@ -3,12 +3,23 @@ import json
 import time
 from .database import db
 from .arcanist import arc
+from .api import api_call
 
 diff_revision_policy_update_sql = """UPDATE default_differential.differential_revision
     SET viewPolicy = %s,editPolicy = %s
     WHERE id = %s"""
 
+diff_reviewer_update_sql = """UPDATE default_differential.edge
+    SET src = %s,dst = %s, type = %s
+    WHERE id = %s"""
+
 class Diff():
+    def get_phid_from_id(self, id):
+        phabed_name = "D%s" % id
+        result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
+        if result:
+            return result[phabed_name]['phid']
+
     def create_raw(self, diff):
         """
         Create a diff using arc.
@@ -50,5 +61,15 @@ class Diff():
 
         db.commit(connection)
         db.disconnect(connection)
+
+    def set_revision_reviewer(self, revision_phid, user_phid):
+        connection = db.connect()
+
+        with connection.cursor() as cursor:
+            cursor.execute(diff_reviewer_update_sql, (revision_phid, user_phid, 35))
+
+        db.commit(connection)
+        db.disconnect(connection)
+
 
 diff = Diff()

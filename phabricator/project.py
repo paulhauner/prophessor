@@ -8,6 +8,11 @@ class Project():
         if result:
             return result[phabed_name]['phid']
 
+    def get_users(self, project_phid):
+        result = api_call.template("get_project_details", (project_phid,))
+        if result:
+            return result['data'][project_phid]['members']
+
     def add_user(self, user_phid, project_phid):
         return api_call.template("add_user_to_project", (user_phid, project_phid))
 

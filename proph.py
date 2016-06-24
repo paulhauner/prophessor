@@ -59,6 +59,12 @@ class LoadRawDiffs():
             view_policy=policy_phid,
             edit_policy=policy_phid
         )
+        revision_phid = phab_diff.get_phid_from_id(revision_id)
+        if not revision_phid:
+            print("Error: unable to obtain phid for revision")
+            return -1
+        # this code will only run if we know our marking project and revision phids
+        self.assign_project_users_to_diff_revision_as_reviewers(revision_phid , marking_project_phid)
         print("Success for project: %s" % (project_name))
         print("(diff_id: %s revision_id: %s policy_phid: %s diff_file: %s)" % (
             diff_id,
@@ -67,6 +73,10 @@ class LoadRawDiffs():
             diff_file
         ))
 
+    def assign_project_users_to_diff_revision_as_reviewers(self, revision_phid, project_phid):
+        user_phids = phab_project.get_users(project_phid)
+        for user_phid in user_phids:
+            phab_diff.set_revision_reviewer(revision_phid, user_phid)
 
     def create_diff_from_file(self, diff_location):
         """
