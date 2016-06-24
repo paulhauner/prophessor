@@ -28,6 +28,11 @@ class LoadRawDiffs():
             project_part=project_part,
             is_marking_group=False
         )
+        marking_project_name = group_translator.build_project_name(
+            group_num=group_number,
+            project_part=project_part,
+            is_marking_group=True
+        )
         # this code will only run if we know a group to which we should assign this diff to
         diff_id = self.create_diff_from_file(diff_file)
         if diff_id < 0:
@@ -41,11 +46,11 @@ class LoadRawDiffs():
         if not revision_id:
             print('Error: Unable to create revision for diff file: %s' % diff_file)
         # this code will only run if we have successfully created a diff & revision
-        project_phid = phab_project.get_phid_from_name(project_name)
-        if not project_phid:
-            print("Error: could not find PHID for project: %s" % project_name)
+        marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
+        if not marking_project_phid:
+            print("Error: could not find PHID for project: %s" % marking_project_name)
         # this code will only run if we have a valid phid for the project
-        policy_phid = phab_policy.create_project_policy([project_phid])
+        policy_phid = phab_policy.create_project_policy([marking_project_phid])
         if not policy_phid:
             print("Error: unable to create policy")
         # this code will only run if we have a policy to add to our new revision
