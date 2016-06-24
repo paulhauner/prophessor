@@ -41,7 +41,11 @@ class LoadRawDiffs():
         if not revision_id:
             print('Error: Unable to create revision for diff file: %s' % diff_file)
         # this code will only run if we have successfully created a diff & revision
-        policy_phid = phab_policy.create_project_policy([project_name])
+        project_phid = phab_project.get_phid_from_name(project_name)
+        if not project_phid:
+            print("Error: could not find PHID for project: %s" % project_name)
+        # this code will only run if we have a valid phid for the project
+        policy_phid = phab_policy.create_project_policy([project_phid])
         if not policy_phid:
             print("Error: unable to create policy")
         # this code will only run if we have a policy to add to our new revision
