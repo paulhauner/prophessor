@@ -49,6 +49,13 @@ class LoadRawDiffs():
             view_policy=policy_phid,
             edit_policy=policy_phid
         )
+        print("Success for project: %s" % (project_name))
+        print("(diff_id: %s revision_id: %s policy_phid: %s diff_file: %s)" % (
+            diff_id,
+            revision_id,
+            policy_phid,
+            phab_diff
+        ))
 
 
     def create_diff_from_file(self, diff_location):
