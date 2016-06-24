@@ -61,6 +61,8 @@ $ python proph.py create-student-groups <csv file> <project number>
 
 _Implements the RESTful API and may be run remotely_
 
+**Before running this command you should have already created your student accounts (this can be done with `enroll`)
+
 Create Phab student projects and assigns users to these projects as per the specified `<csv file>`.
 
 `<project number>` is a number which will be appended to the project name to accommodate for multiple projects per Phabricator instance.
@@ -77,6 +79,8 @@ $ python proph.py create-marker-groups <students csv file> <markers csv file> <p
 ```
 
 _Implements the RESTful API and may be run remotely_
+
+**Before running this command you should have already created your tutor accounts (this can be done with `enroll`)
 
 Create Phab marking projects and assigns tutors to these projects as per the specified csv files.
 
@@ -99,8 +103,8 @@ $ python proph.py load-diffs <directory of diffs> <project number>
 
 _Requires Arcanist and access to the Phabricator database_
 
-**Before running this command you should already have run `enroll` for your markers and run `create-marker-groups`
-so the differential revisions can have the correct view policies**
+**Before running this command you should have already ran `create-marker-groups` and `create-student-groups` so the
+differential revision policies can be effective**
 
 Import all git diff files with `.diff` extension from the `<directory of diffs>` directory and perform the following actions for each file:
 
