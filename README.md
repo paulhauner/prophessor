@@ -61,7 +61,7 @@ $ python proph.py create-student-groups <csv file> <project number>
 
 _Implements the RESTful API and may be run remotely_
 
-**Before running this command you should have already created your student accounts (this can be done with `enroll`)
+**Before running this command you should have already created your student accounts (this can be done with `enroll`)**
 
 Create Phab student projects and assigns users to these projects as per the specified `<csv file>`.
 
@@ -80,7 +80,7 @@ $ python proph.py create-marker-groups <students csv file> <markers csv file> <p
 
 _Implements the RESTful API and may be run remotely_
 
-**Before running this command you should have already created your tutor accounts (this can be done with `enroll`)
+**Before running this command you should have already created your tutor accounts (this can be done with `enroll`)**
 
 Create Phab marking projects and assigns tutors to these projects as per the specified csv files.
 
