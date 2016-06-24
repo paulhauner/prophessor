@@ -73,12 +73,16 @@ Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 ## create-marker-groups
 
 ```
-$ python proph.py create-marker-groups <csv file> <project number>
+$ python proph.py create-marker-groups <students csv file> <markers csv file> <project number>
 ```
 
 _Implements the RESTful API and may be run remotely_
 
-Create Phab marking projects and assigns users to these projects as per the specified `<csv file>`.
+Create Phab marking projects and assigns tutors to these projects as per the specified csv files.
+
+`<students csv file>` is used to get the list of groups.
+
+`<markers csv file>` is used to get the list of tutors.
 
 `<project number>` is a number which will be appended to the project name to accommodate for multiple projects per Phabricator instance.
 

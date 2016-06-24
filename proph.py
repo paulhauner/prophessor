@@ -1,4 +1,5 @@
 import sys
+import random
 from local_settings import *
 from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
@@ -108,9 +109,54 @@ class Enroll():
 
 class CreateProjects():
     def go(self, csv, project_part, is_marking_group):
-        self.create_projects(csv, project_part, is_marking_group)
+        if is_marking_group:
+            self.create_marking_projects(csv, project_part, is_marking_group)
+        else:
+            self.create_student_projects(csv, project_part, is_marking_group)
 
-    def create_projects(self, csv, project_part, is_marking_group, icon="policy", color="red"):
+    def create_marking_projects(self, students_csv, markers_csv, project_part, icon="policy", color="red"):
+        """
+        create_project creates projects in Phabricator from a csv.
+        :param groups: A unique list of projects.
+        :param icon: String of phab icon name.
+        :param color: String of phab color.
+        :return: None
+        """
+        all_group_codes = load_group_membership.unique_groups(students_csv)
+        all_tutors = load_group_membership.usernames(markers_csv)
+        allocations = self.get_random_tutor_marking_allocations(all_tutors, all_group_codes)
+
+        for tutor, group_codes in allocations.iteritems():
+            print("Tutor %s is marking groups: %s" % (tutor, group_codes)) # this is in a separate loop to make it print cleanly
+
+        for tutor, group_codes in allocations.iteritems():
+            tutor_phid = phab_user.get_phid_from_username(tutor)
+            for group_code in group_codes:
+                group_name = group_translator.get_project_name_from_group_code(
+                    group_code=group_code,
+                    project_part=project_part,
+                    is_marking_group=True
+                )
+                phab_project.create(group_name, icon, color, [tutor_phid])
+                print("Created group: %s" % (group_name,))
+
+    def get_random_tutor_marking_allocations(self, tutors=[], groups=[]):
+        if not tutors:
+            raise Exception("Error: No tutor usernames")
+        random.shuffle(groups)
+        tutor_allocations = {tutor: [] for tutor in tutors}
+        unallocated_groups = list(groups)
+
+        tutor_index = 0
+        while len(unallocated_groups):
+            cur_group = unallocated_groups.pop()
+            tutor_allocations[tutors[tutor_index]].append(cur_group)
+            tutor_index += 1
+            tutor_index %= len(tutors)
+
+        return tutor_allocations
+
+    def create_student_projects(self, csv, project_part, icon="policy", color="red"):
         """
         create_project creates projects in Phabricator from a csv.
         :param groups: A unique list of projects.
@@ -123,7 +169,7 @@ class CreateProjects():
             group_name = group_translator.get_project_name_from_group_code(
                 group_code=group_code,
                 project_part=project_part,
-                is_marking_group=is_marking_group
+                is_marking_group=False
             )
             if group_name:
                 usernames = load_group_membership.users_for_group(csv, group_code)
@@ -151,17 +197,17 @@ if arg_task == 'enroll':
     thanks()
 
 elif arg_task == 'create-student-groups':
-    # python proph.py create-student-groups group_members.csv 1234
+    # python proph.py create-student-groups students.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
-    action.go(sys.argv[2], part, False)
+    action.create_student_projects(sys.argv[2], part)
     thanks()
 
 elif arg_task == 'create-marker-groups':
-    # python proph.py create-marker-groups markers.csv 1234
-    part = int(sys.argv[3])
+    # python proph.py create-marker-groups students.csv markers.csv 1234
+    part = int(sys.argv[4])
     action = CreateProjects()
-    action.go(sys.argv[2], part, True)
+    action.create_marking_projects(sys.argv[2], sys.argv[3], part, True)
     thanks()
 
 elif arg_task == 'load-diffs':

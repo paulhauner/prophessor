@@ -5,6 +5,13 @@ class Load():
     """
     Load users, groups and their relations
     """
+    def usernames(self, csv_file):
+        all = self.from_csv(csv_file)
+        results = []
+        for e in all:
+            results.append(e['User Name'])
+        return results
+
     def users_for_group(self, csv_file, group_code):
         """
         Return a list of User Names which belong to a group
