@@ -106,6 +106,18 @@ See `example_files/diffs` for an example of the directory and `.diff` files.
 
 Example: `$ python proph.py load-diffs example_files/diffs/ 1`
 
+# Notes
+
+## `<csv file>`
+
+The format of this file is the same as the one downloaded from Blackboard, however you will need to add an "Email" column
+and a "Password" column. You can use random.org to generate the passwords and easily paste them into Excel (or similar).
+
+## Diffs
+
+One of the git diffs I faced was in UTF-16-LE encoding and Phabricator didn't like this. I used the ubiquitous `iconv`
+program (Linux/Unix/OSX) to convert the file to UTF-8 which Phabricator then accepted.
+
 
 # Credits
 
