@@ -99,6 +99,9 @@ $ python proph.py load-diffs <directory of diffs> <project number>
 
 _Requires Arcanist and access to the Phabricator database_
 
+**Before running this command you should already have run `enroll` for your markers and run `create-marker-groups`
+so the differential revisions can have the correct view policies**
+
 Import all git diff files with `.diff` extension from the `<directory of diffs>` directory and perform the following actions for each file:
 
 - Create a Differential
