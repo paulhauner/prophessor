@@ -108,7 +108,7 @@ Example: `$ python proph.py load-diffs example_files/diffs/ 1`
 
 # Notes
 
-## `<csv file>`
+## Students & markers CSV file
 
 The format of this file is the same as the one downloaded from Blackboard, however you will need to add an "Email" column
 and a "Password" column. You can use random.org to generate the passwords and easily paste them into Excel (or similar).
