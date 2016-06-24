@@ -54,7 +54,7 @@ class LoadRawDiffs():
             diff_id,
             revision_id,
             policy_phid,
-            phab_diff
+            diff_file
         ))
 
 
@@ -138,31 +138,41 @@ class CreateProjects():
                 print("Skipped: %s" % (group_code,))
 
 
+def thanks():
+    print("")
+    print("(　´･‿･｀)")
+    print("Complete.")
+
 # Parse arguments to do stuff
 
 if arg_task == 'enroll':
     # python proph.py enroll group_members.csv
     action = Enroll()
     action.go(sys.argv[2])
+    thanks()
 
 elif arg_task == 'create-student-groups':
     # python proph.py create-student-groups group_members.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, False)
+    thanks()
 
 elif arg_task == 'create-marker-groups':
     # python proph.py create-marker-groups markers.csv 1234
     part = int(sys.argv[3])
     action = CreateProjects()
     action.go(sys.argv[2], part, True)
+    thanks()
 
 elif arg_task == 'load-diffs':
     # python proph.py load-diffs diffs/ 1234
     part = int(sys.argv[3])
     action = LoadRawDiffs()
     action.go(sys.argv[2], part)
+    thanks()
 
 else:
     print("Unknown command. " + u"\u00af\_(\u30c4)_/\u00af".encode('utf-8'))
+
 
