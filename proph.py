@@ -143,7 +143,7 @@ class CreateProjects():
                     project_part=project_part,
                     is_marking_group=True
                 )
-                phab_project.create(group_name, icon, color, [tutor_phid])
+                phab_project.create(group_name, icon, color, [tutor_phid] + PHAB_SUPER_USER_PHIDS)
                 print("Created group: %s" % (group_name,))
 
     def get_random_tutor_marking_allocations(self, tutors=[], groups=[]):
