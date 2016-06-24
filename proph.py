@@ -105,7 +105,7 @@ class Enroll():
                     user['Last Name']
                 ))
             else:
-                print("%s (%s %s) successfully created." % (
+                print("User %s (%s %s) successfully created." % (
                     user['User Name'],
                     user['First Name'],
                     user['Last Name']
