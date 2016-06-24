@@ -47,7 +47,7 @@ phab_api_templates = {
 
 class Call():
     def raw(self, method, data_string):
-        print("API CALL:  %s -- %s" % (method, data_string))
+        # print("API CALL:  %s -- %s" % (method, data_string))
         return subprocess.check_output(["curl", "-s", PHAB_API_ADDRESS + "/api/" + method, "-d", data_string])
 
     def template(self, template_name, args):
