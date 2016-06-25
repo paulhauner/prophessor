@@ -53,10 +53,10 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py enroll example_files/students.csv`
 
 
-## create-projects
+## create-student-groups
 
 ```
-$ python proph.py create-student-groups <csv file> <project number>
+$ python proph.py create-student-groups <student csv file> <project number>
 ```
 
 _Implements the RESTful API and may be run remotely_
