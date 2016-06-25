@@ -76,7 +76,8 @@ class LoadRawDiffs():
     def assign_project_users_to_diff_revision_as_reviewers(self, revision_phid, project_phid):
         user_phids = phab_project.get_users(project_phid)
         for user_phid in user_phids:
-            phab_diff.set_revision_reviewer(revision_phid, user_phid)
+            if user_phid not in PHAB_SUPER_USER_PHIDS:
+                phab_diff.set_revision_reviewer(revision_phid, user_phid)
 
     def create_diff_from_file(self, diff_location):
         """
