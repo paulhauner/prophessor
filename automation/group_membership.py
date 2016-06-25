@@ -61,7 +61,7 @@ class Load():
 
 class Translate():
     def get_group_number_from_group_code(self, group_code):
-        code_regex = re.compile("Project_gc_Group_gc_(\d+)")
+        code_regex = re.compile("Group_gc_(\d+)")
         result = code_regex.search(group_code)
         if result:
             return int(result.group(1))
