@@ -9,9 +9,10 @@ diff_revision_policy_update_sql = """UPDATE default_differential.differential_re
     SET viewPolicy = %s,editPolicy = %s
     WHERE id = %s"""
 
-diff_reviewer_update_sql = """UPDATE default_differential.edge
-    SET src = %s,dst = %s, type = %s
-    WHERE id = %s"""
+
+diff_reviewer_update_sql = """INSERT INTO default_differential.edge
+    (src, dst, type, dateCreated, seq)
+VALUES (%s, %s, 35, %s, 0)"""
 
 class Diff():
     def get_phid_from_id(self, id):
@@ -65,8 +66,10 @@ class Diff():
     def set_revision_reviewer(self, revision_phid, user_phid):
         connection = db.connect()
 
+        timestamp = int(time.time())
+
         with connection.cursor() as cursor:
-            cursor.execute(diff_reviewer_update_sql, (revision_phid, user_phid, 35))
+            cursor.execute(diff_reviewer_update_sql, (revision_phid, user_phid, timestamp))
 
         db.commit(connection)
         db.disconnect(connection)
