@@ -20,7 +20,7 @@ phab_api_templates = {
         },
     "get_project_details": {
         "method": "project.query",
-        "data": "api.token=" + PHAB_API_TOKEN + "&names[]=%s",
+        "data": "api.token=" + PHAB_API_TOKEN + "&phids[]=%s",
         "args": ("group_name")
     },
     "create_project": {

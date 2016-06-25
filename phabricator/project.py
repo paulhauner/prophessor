@@ -9,7 +9,7 @@ class Project():
         if result:
             return result[phabed_name]['phid']
 
-    def get_users(self, project_name):
+    def get_users(self, project_phid):
         result = api_call.template("get_project_details", (project_phid,))
         if result:
             return json.dumps(result["data"][project_phid]["member"])
