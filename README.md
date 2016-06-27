@@ -1,18 +1,18 @@
 # Prophessor
 Phabricator Assessessments Automation
 
-# Dependencies
+## Dependencies
 
 - Python ~2.7
 - Arcanist
 
-# Introduction
+## Introduction
 
 This is a software package designed to automate some specific tasks related to using Phabricator as a teaching aid.
 
 This package is biased towards and designed for lectures by Luke Anderson.
 
-# Usage
+## Usage
 
 Commands are executed by running `proph.py` from Python with arguments.
 
@@ -35,10 +35,10 @@ directly on the Phabricator server with access to the Phab db, Phab PHP files, A
 Some configuration is required for each Phabricator instance. All of these settings are available in the
 `local_settings.py` file.
 
-# Commands
+## Commands
 
 
-## enroll
+### enroll
 
 ```
 $ python proph.py enroll <csv file>
@@ -53,7 +53,7 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py enroll example_files/students.csv`
 
 
-## create-student-groups
+### create-student-groups
 
 ```
 $ python proph.py create-student-groups <student csv file> <project number>
@@ -72,7 +72,7 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 
 
-## create-marker-groups
+### create-marker-groups
 
 ```
 $ python proph.py create-marker-groups <students csv file> <markers csv file> <project number>
@@ -95,7 +95,7 @@ See `example_files/markers.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
 
 
-## load-diffs
+### load-diffs
 
 ```
 $ python proph.py load-diffs <directory of diffs> <project number>
@@ -117,21 +117,21 @@ See `example_files/diffs` for an example of the directory and `.diff` files.
 
 Example: `$ python proph.py load-diffs example_files/diffs/ 1`
 
-# Notes
+## Notes
 
-## Students & markers CSV file
+### Students & markers CSV file
 
 The format of this file is the same as the one downloaded from Blackboard, however you will need to add an "Email" column
 and a "Password" column. You can use [random.org](https://www.random.org/strings/) to generate the passwords and easily paste them into Excel (or similar).
 
-## Diffs
+### Diffs
 
 One of the git diffs I faced was in UTF-16-LE encoding and Phabricator didn't like this. I used the ubiquitous `iconv`
 program (Linux/Unix/OSX) to convert the file to UTF-8 which Phabricator then accepted.
 
 
-# Credits
+## Credits
 
-Concept and original design by Luke Anderson
+Concept and original design by Luke Anderson.
 
 Re-factor by Paul Hauner.
