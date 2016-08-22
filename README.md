@@ -72,6 +72,26 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 
 
+### lockdown-student-groups
+
+```
+$ python proph.py lockdown-student-groups <student csv file> <project number>
+```
+
+_Executes SQL. Must be run in an environment with access to the Phabricator database._
+
+**Before running this command you should have already created student projects**
+
+Lock down the permissions for the groups in the `<csv file>`. Each group will have view, edit and join policies
+restricted to only the project itself.
+
+`<project number>` is a number which will be appended to the project name to accommodate for multiple projects per Phabricator instance.
+
+See `example_files/students.csv` for an example of the `<csv file>`.
+
+Example: `$ python proph.py lockdown-student-groups example_files/students.csv 1`
+
+
 ### create-marker-groups
 
 ```

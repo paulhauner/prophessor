@@ -1,6 +1,10 @@
 import json
 from .api import api_call
+from .database import db
 
+project_policy_update_sql = """UPDATE default_project.project
+    SET viewPolicy = %s,editPolicy = %s, joinPolicy = %s
+    WHERE phid = %s"""
 
 class Project():
     def get_phid_from_name(self, name):
@@ -26,6 +30,21 @@ class Project():
                                      (name, icon, color, "&" + "&".join(["members[]=%s" % (m,) for m in members])))
         else:
             return api_call.template("create_project", (name, icon, color, ""))
+
+    def set_policy(self, project_phid, view_policy, edit_policy, join_policy):
+        connection = db.connect()
+
+        with connection.cursor() as cursor:
+            cursor.execute(project_policy_update_sql, (
+                view_policy,
+                edit_policy,
+                join_policy,
+                project_phid,
+            ))
+
+        db.commit(connection)
+        db.disconnect(connection)
+
 
 project = Project()
 

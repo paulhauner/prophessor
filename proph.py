@@ -209,6 +209,23 @@ class CreateProjects():
             else:
                 print("Skipped: %s" % (group_code,))
 
+    def lockdown_student_projects(self, csv, project_part):
+        groups = load_group_membership.unique_groups(csv)
+        for group_code in groups:
+            group_name = group_translator.get_project_name_from_group_code(
+                group_code=group_code,
+                project_part=project_part,
+                is_marking_group=False
+            )
+            if group_name:
+                project_phid = phab_project.get_phid_from_name(group_name)
+                print("Locking down {0} ({1})".format(group_name, project_phid))
+                phab_project.set_policy(project_phid, project_phid, project_phid, project_phid)
+            else:
+                print("Skipped: %s" % (group_code,))
+
+
+
 
 def thanks():
     print("")
@@ -227,6 +244,13 @@ elif arg_task == 'create-student-groups':
     part = int(sys.argv[3])
     action = CreateProjects()
     action.create_student_projects(sys.argv[2], part)
+    thanks()
+
+elif arg_task == 'lockdown-student-groups':
+    # python proph.py lockdown-student-groups students.csv 1234
+    part = int(sys.argv[3])
+    action = CreateProjects()
+    action.lockdown_student_projects(sys.argv[2], part)
     thanks()
 
 elif arg_task == 'create-marker-groups':
