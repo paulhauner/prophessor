@@ -267,7 +267,10 @@ elif arg_task == 'load-diffs':
     action.go(sys.argv[2], part)
     thanks()
 
+elif arg_task == 'test-diff-callsign-mapping':
+    # python proph.py test-diff-callsign-mapping
+    print(phab_diff.get_callsign_mapping())
+    thanks()
+
 else:
     print("Unknown command. " + u"\u00af\_(\u30c4)_/\u00af".encode('utf-8'))
-
-

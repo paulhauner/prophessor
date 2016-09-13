@@ -14,6 +14,11 @@ diff_reviewer_update_sql = """INSERT INTO default_differential.edge
     (src, dst, type, dateCreated, seq)
 VALUES (%s, %s, 35, %s, 0)"""
 
+diff_callsign_mapping_sql = """SELECT r.callsign, p.name
+FROM default_repository.repository r
+JOIN default_project.project p ON r.editPolicy = p.phid
+"""
+
 class Diff():
     def get_phid_from_id(self, id):
         phabed_name = "D%s" % id
@@ -74,5 +79,14 @@ class Diff():
         db.commit(connection)
         db.disconnect(connection)
 
+    def get_callsign_mapping(self):
+        connection = db.connect()
+
+        with connection.cursor() as cursor:
+                cursor.execute(diff_callsign_mapping_sql)
+
+        result = db.commit(connection)
+        print(result)
+        db.disconnect(connection)
 
 diff = Diff()
