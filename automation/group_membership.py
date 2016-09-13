@@ -81,6 +81,14 @@ class Translate():
         else:
             return "G%02d-Project-Part%02d" % (group_num, project_part)
 
+    def get_group_number_from_project_name(self, project_name):
+        code_regex = re.compile("G(\d+)-Project-Part")
+	result = code_regex.search(project_name)
+	if result:
+	    return int(result.group(1))
+	else:
+	    return None
+
 
 load = Load()
 translate = Translate()

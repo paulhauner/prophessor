@@ -19,7 +19,8 @@ class LoadRawDiffs():
             self.create_diff_and_revision(os.path.join(dir, diff_file), project_part)
 
     def create_diff_and_revision(self, diff_file, project_part):
-        group_number = submitted_diffs.get_diff_group_number(diff_file)
+	callsign_mappings = phab_diff.get_callsign_mapping()
+        group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
         if not group_number:
             print('Error: Could not determine group number from diff filename.')
             return -1
@@ -269,7 +270,9 @@ elif arg_task == 'load-diffs':
 
 elif arg_task == 'test-diff-callsign-mapping':
     # python proph.py test-diff-callsign-mapping
-    print(phab_diff.get_callsign_mapping())
+    action = LoadRawDiffs()
+    print(os.getcwd())
+    action.create_diff_and_revision(os.path.join(os.getcwd(), 'diffs', 'ONEFIFTEEN.diff'), 1)
     thanks()
 
 else:
