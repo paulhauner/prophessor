@@ -92,7 +92,7 @@ class Diff():
                 'name': row['name'],
             })
 
-            db.disconnect(connection)
+        db.disconnect(connection)
 
         return result
 

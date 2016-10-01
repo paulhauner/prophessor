@@ -3,6 +3,7 @@ import random
 from local_settings import *
 from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
+from automation.generate_diffs_from_phab_repos import GenerateDiffs
 from automation.diffs import diffs as submitted_diffs
 from phabricator.project import project as phab_project
 from phabricator.user import user as phab_user
@@ -266,6 +267,14 @@ elif arg_task == 'load-diffs':
     part = int(sys.argv[3])
     action = LoadRawDiffs()
     action.go(sys.argv[2], part)
+    thanks()
+
+elif arg_task == 'generate-diffs':
+    # python proph.py generate-diffs /var/repo /shared_volume/generated_diffs
+    repos = sys.argv[2]
+    output = sys.argv[3]
+    action = GenerateDiffs()
+    action.from_phabricator_repos(repos, output)
     thanks()
 
 elif arg_task == 'test-diff-callsign-mapping':
