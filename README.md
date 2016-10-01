@@ -133,6 +133,12 @@ Import all git diff files with `.diff` extension from the `<directory of diffs>`
 - Determine the group number from the `.diff` filename and give view and edit permissions for the Revision
 to the marking group which matches the group number and `<project number>` specified.
 
+Determining the group number is handled by prophessor one of the following methods:
+
+ - Determine the group using a regex pattern from the file name.
+ - Obtain a list of Diffusion 'callsigns' from Phabricator and check for filename matches
+ to these callsigns.
+
 See `example_files/diffs` for an example of the directory and `.diff` files.
 
 Example: `$ python proph.py load-diffs example_files/diffs/ 1`
