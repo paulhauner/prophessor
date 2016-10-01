@@ -19,7 +19,7 @@ class LoadRawDiffs():
             self.create_diff_and_revision(os.path.join(dir, diff_file), project_part)
 
     def create_diff_and_revision(self, diff_file, project_part):
-	callsign_mappings = phab_diff.get_callsign_mapping()
+        callsign_mappings = phab_diff.get_callsign_mapping()
         group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
         if not group_number:
             print('Error: Could not determine group number from diff filename.')

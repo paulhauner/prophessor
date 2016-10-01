@@ -82,19 +82,18 @@ class Diff():
     def get_callsign_mapping(self):
         connection = db.connect()
 
+        cursor = connection.cursor()
+        cursor.execute(diff_callsign_mapping_sql)
 
-	cursor = connection.cursor()
-	cursor.execute(diff_callsign_mapping_sql)
+        result = []
+        for row in cursor:
+            result.append({
+                'callsign': row['callsign'],
+                'name': row['name'],
+            })
 
-	result = []
-	for row in cursor:
-		result.append({
-			'callsign': row['callsign'],
-			'name': row['name'],
-		})
+            db.disconnect(connection)
 
-        db.disconnect(connection)
-
-	return result
+        return result
 
 diff = Diff()
