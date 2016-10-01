@@ -16,9 +16,9 @@ class Diffs():
                 # if its not a callsign. try and resolve it otherwise
                 code_regex = re.compile("Group (\d+)_")
                 result = code_regex.search(filename)
-        if result:
-            return int(result.group(1))
-        else:
-            return None
+                if result:
+                    return int(result.group(1))
+                else:
+                    return None
 
 diffs = Diffs()
