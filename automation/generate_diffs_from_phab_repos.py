@@ -5,7 +5,7 @@ import errno
 
 class GenerateDiffs():
 
-    def from_phabricator_repos(self, path_to_repos, path_for_diffs):
+    def from_phabricator_repos(self, path_to_repos, path_for_diffs, to_date, branch="master"):
         target_dir = path_to_repos
         dest_dir = path_for_diffs
 
@@ -17,7 +17,8 @@ class GenerateDiffs():
                 raise
 
         from_commit = "`git rev-list master | tail -n 1`"
-        to_commit = "`git rev-list master | head -n 1`"
+        to_commit = "`git log %s --before \"%s\" --pretty=%%h | head -n 1`" % (branch, to_date)
+        # to_commit = "`git rev-list master | head -n 1`"
 
         repos = os.listdir(target_dir)
 
@@ -25,7 +26,7 @@ class GenerateDiffs():
             filename = repo
 
             os.chdir(os.path.join(target_dir, repo))
-            print('Working on %s' % (repo))
+            print('Working on %s' % repo)
 
             try:
                 p = subprocess.check_output("git diff %s %s" % (from_commit, to_commit), shell=True)

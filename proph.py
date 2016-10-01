@@ -270,11 +270,12 @@ elif arg_task == 'load-diffs':
     thanks()
 
 elif arg_task == 'generate-diffs':
-    # python proph.py generate-diffs /var/repo /shared_volume/generated_diffs
-    repos = sys.argv[2]
-    output = sys.argv[3]
+    # python proph.py generate-diffs 2016-09-25 /var/repo /shared_volume/generated_diffs
+    date = sys.argv[2]
+    repos = sys.argv[3]
+    output = sys.argv[4]
     action = GenerateDiffs()
-    action.from_phabricator_repos(repos, output)
+    action.from_phabricator_repos(repos, output, date)
     thanks()
 
 elif arg_task == 'test-diff-callsign-mapping':
