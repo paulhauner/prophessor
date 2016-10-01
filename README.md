@@ -38,6 +38,8 @@ Some configuration is required for each Phabricator instance. All of these setti
 ## Commands
 
 
+
+
 ### enroll
 
 ```
@@ -51,6 +53,10 @@ Creates users based on the information in the specified `<csv file>`.
 See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py enroll example_files/students.csv`
+
+
+
+
 
 
 ### create-student-groups
@@ -72,6 +78,10 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 
 
+
+
+
+
 ### lockdown-student-groups
 
 ```
@@ -90,6 +100,10 @@ restricted to only the project itself.
 See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py lockdown-student-groups example_files/students.csv 1`
+
+
+
+
 
 
 ### create-marker-groups
@@ -113,6 +127,10 @@ Create Phab marking projects and assigns tutors to these projects as per the spe
 See `example_files/markers.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
+
+
+
+
 
 
 ### load-diffs
@@ -142,6 +160,10 @@ Determining the group number is handled by prophessor one of the following metho
 See `example_files/diffs` for an example of the directory and `.diff` files.
 
 Example: `$ python proph.py load-diffs example_files/diffs/ 1`
+
+
+
+
 
 ### generate-diffs
 
