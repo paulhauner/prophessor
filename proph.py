@@ -23,7 +23,7 @@ class LoadRawDiffs():
         callsign_mappings = phab_diff.get_callsign_mapping()
         group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
         if not group_number:
-            print('Error: Could not determine group number from diff filename.')
+            print('Error: Could not determine group number from filename: %s' % diff_file)
             return -1
         project_name = group_translator.build_project_name(
             group_num=group_number,
@@ -36,6 +36,11 @@ class LoadRawDiffs():
             is_marking_group=True
         )
         # this code will only run if we know a group to which we should assign this diff to
+        marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
+        if not marking_project_phid:
+            print("Error: could not find project PHID for diff: %s" % diff_file)
+            return -1
+        # this code will only run if we have a valid phid for the project
         diff_id = self.create_diff_from_file(diff_file)
         if diff_id < 0:
             print('Error: Could not create differential with file: %s' % diff_file)
@@ -48,13 +53,10 @@ class LoadRawDiffs():
         if not revision_id:
             print('Error: Unable to create revision for diff file: %s' % diff_file)
         # this code will only run if we have successfully created a diff & revision
-        marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
-        if not marking_project_phid:
-            print("Error: could not find PHID for project: %s" % marking_project_name)
-        # this code will only run if we have a valid phid for the project
         policy_phid = phab_policy.create_project_policy([marking_project_phid])
         if not policy_phid:
             print("Error: unable to create policy")
+            return -1
         # this code will only run if we have a policy to add to our new revision
         phab_diff.set_revision_policy(
             revision_id=revision_id,
@@ -68,12 +70,14 @@ class LoadRawDiffs():
         # this code will only run if we know our marking project and revision phids
         self.assign_project_users_to_diff_revision_as_reviewers(revision_phid , marking_project_phid)
         print("Success for project: %s" % (project_name))
-        print("(diff_id: %s revision_id: %s policy_phid: %s diff_file: %s)" % (
+        '''
+        print("    (diff_id: %s revision_id: %s policy_phid: %s diff_file: %s)" % (
             diff_id,
             revision_id,
             policy_phid,
             diff_file
         ))
+        '''
 
     def assign_project_users_to_diff_revision_as_reviewers(self, revision_phid, project_phid):
         user_phids = phab_project.get_users(project_phid)
