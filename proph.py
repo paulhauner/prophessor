@@ -14,6 +14,11 @@ arg_task = sys.argv[1]
 
 
 class LoadRawDiffs():
+    def print_callsign_mappings(self):
+        callsign_mappings = phab_diff.get_callsign_mapping()
+        for mapping in callsign_mappings:
+	    print('{0}\t{1}'.format(mapping['callsign'], mapping['name']))
+
     def print_diff_mappings(self, dir):
         diff_files = submitted_diffs.get_all(dir)
         for diff_file in diff_files:
@@ -284,6 +289,12 @@ elif arg_task == 'print-diff-mappings':
     # python proph.py print-diff-mappings diffs/ 
     action = LoadRawDiffs()
     action.print_diff_mappings(sys.argv[2])
+    thanks()
+
+elif arg_task == 'print-callsign-mappings':
+    # python proph.py print-callsign-mappings
+    action = LoadRawDiffs()
+    action.print_callsign_mappings()
     thanks()
 
 elif arg_task == 'generate-diffs':
