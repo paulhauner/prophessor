@@ -11,7 +11,7 @@ class Diffs():
     def get_diff_group_number(self, filename, callsign_mappings=[]):
         # try and see if it's a callsign first
         for mapping in callsign_mappings:
-            if mapping['callsign'] + '.diff' in filename:
+            if mapping['callsign'] + '.diff' == filename:
                 return translate.get_group_number_from_project_name(mapping['name'])
 	# if its not a callsign. try and resolve it otherwise
 	code_regex = re.compile("Group (\d+)_")
