@@ -295,12 +295,5 @@ elif arg_task == 'generate-diffs':
     action.from_phabricator_repos(repos, output, date)
     thanks()
 
-elif arg_task == 'test-diff-callsign-mapping':
-    # python proph.py test-diff-callsign-mapping
-    action = LoadRawDiffs()
-    print(os.getcwd())
-    action.create_diff_and_revision(os.path.join(os.getcwd(), 'diffs', 'ONEFIFTEEN.diff'), 1)
-    thanks()
-
 else:
     print("Unknown command. " + u"\u00af\_(\u30c4)_/\u00af".encode('utf-8'))
