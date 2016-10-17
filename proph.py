@@ -14,7 +14,7 @@ arg_task = sys.argv[1]
 
 
 class LoadRawDiffs():
-    def print_mappings(self, dir):
+    def print_diff_mappings(self, dir):
         diff_files = submitted_diffs.get_all(dir)
         for diff_file in diff_files:
             callsign_mappings = phab_diff.get_callsign_mapping()
@@ -283,7 +283,7 @@ elif arg_task == 'load-diffs':
 elif arg_task == 'print-diff-mappings':
     # python proph.py print-diff-mappings diffs/ 
     action = LoadRawDiffs()
-    action.print_mappings(sys.argv[2])
+    action.print_diff_mappings(sys.argv[2])
     thanks()
 
 elif arg_task == 'generate-diffs':
