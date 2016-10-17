@@ -14,6 +14,13 @@ arg_task = sys.argv[1]
 
 
 class LoadRawDiffs():
+    def print_mappings(self, dir):
+        diff_files = submitted_diffs.get_all(dir)
+        for diff_file in diff_files:
+            callsign_mappings = phab_diff.get_callsign_mapping()
+            group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
+	    print('Diff file {0} is by group {1}'.format(diff_file, group_number))
+
     def go(self, dir, project_part):
         diff_files = submitted_diffs.get_all(dir)
         for diff_file in diff_files:
@@ -271,6 +278,12 @@ elif arg_task == 'load-diffs':
     part = int(sys.argv[3])
     action = LoadRawDiffs()
     action.go(sys.argv[2], part)
+    thanks()
+
+elif arg_task == 'print-diff-mappings':
+    # python proph.py print-diff-mappings diffs/ 
+    action = LoadRawDiffs()
+    action.print_mappings(sys.argv[2])
     thanks()
 
 elif arg_task == 'generate-diffs':
