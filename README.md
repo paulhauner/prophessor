@@ -38,6 +38,8 @@ Some configuration is required for each Phabricator instance. All of these setti
 ## Commands
 
 
+
+
 ### enroll
 
 ```
@@ -51,6 +53,10 @@ Creates users based on the information in the specified `<csv file>`.
 See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py enroll example_files/students.csv`
+
+
+
+
 
 
 ### create-student-groups
@@ -72,6 +78,10 @@ See `example_files/students.csv` for an example of the `<csv file>`.
 Example: `$ python proph.py create-student-groups example_files/students.csv 1`
 
 
+
+
+
+
 ### lockdown-student-groups
 
 ```
@@ -90,6 +100,10 @@ restricted to only the project itself.
 See `example_files/students.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py lockdown-student-groups example_files/students.csv 1`
+
+
+
+
 
 
 ### create-marker-groups
@@ -113,6 +127,10 @@ Create Phab marking projects and assigns tutors to these projects as per the spe
 See `example_files/markers.csv` for an example of the `<csv file>`.
 
 Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
+
+
+
+
 
 
 ### load-diffs
@@ -142,6 +160,35 @@ Determining the group number is handled by prophessor one of the following metho
 See `example_files/diffs` for an example of the directory and `.diff` files.
 
 Example: `$ python proph.py load-diffs example_files/diffs/ 1`
+
+
+
+
+
+### generate-diffs
+
+```
+$ python proph.py generate-diffs <final-submission-date> <phabricator repos dir> <dir to output diff files>
+```
+
+_Requires the RESTful API, Arcanist and access to the Phabricator database_
+
+Scan the `<phabricator repos dir>` and attempt the following on each repository it finds:
+ - Obtain the earliest commit on the `master` branch
+ - Obtain the latest commit on the `master` branch _before_ the specified `<final submission date>`
+ - Create a differential file inside the `<dir to output diff files>` with respect to the previous two commits.
+
+The `<phabricator repos dir>` is the folder in which Phabricator stores it's local repositories.
+Historically, this folder is located at `/var/repo`.
+
+The `<dir to outpuy diff files>` is arbitrary.
+You will most likely specify this folder as the `<directory of diffs>` folder when running the
+`load-diffs` prophessor command.
+
+The date should be specified in this format: `YYYY-MM-DD`
+
+Example: `$ python proph.py generate-diffs 2016-09-27 /var/repo /shared_volume/diffs/`
+
 
 ## Notes
 
