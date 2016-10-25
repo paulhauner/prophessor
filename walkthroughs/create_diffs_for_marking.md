@@ -21,9 +21,9 @@ You should definitely read the info for the following commands:
 
 This guide is assuming you have already done the following things:
 
-- Enrolled all your markers into Phabricator using prophessor's `enroll` command and a `.csv` of your student users.
+- Enrolled all your markers into Phabricator using prophessor's `enroll` command with a `.csv` of your student users.
 - Created all your groups in Phabricator using prophessor's `create-student-groups` command.
-- Enrolled all your markers into Phabricator using prophessor's `enroll` command and a `.csv` of your marker users.
+- Enrolled all your markers into Phabricator using prophessor's `enroll` command with a `.csv` of your marker users.
 
 ### Server Setup
 
