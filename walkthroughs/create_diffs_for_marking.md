@@ -42,7 +42,7 @@ _Remember, everything needs to be done on the Phabricator server - for me, that'
 
 Make sure you pay attention to the output of the prophessor commands - they will tell you when things go wrong or it couldn't figure out who a diff belongs to.
 
-#### Create Groups for Markers 
+#### 1. Create Groups for Markers 
 
 ```
 $ cd /shared_volume
@@ -50,13 +50,13 @@ $ python proph.py create-marker-groups /shared_volume/students.csv /shared_volum
 ```
 
 _The '69' is the project number. Each time you have a sumbmission, it should have a unique project number. 69 is a silly number, for teh lols.
-Eg. if you have a mid-semester submission and a final end-of-semester submission, use project number '1' for the mid-semester submission and project number '2' for the end-of-semester submission._
+If you have a mid-semester submission and a final end-of-semester submission, use project number '1' for the mid-semester submission and project number '2' for the end-of-semester submission._
 
-_The students file is our source of truth for how many groups there are in this class._
+_The `students.csv` file is our source of truth for how many groups there are in this class._
 
-_The markers file is used to allocate groups evenly and randomly (randomly-enough) between groups._
+_The `markers.csv` file is used to allocate groups evenly and randomly (randomly-enough) between groups._
 
-#### Generate Diffs
+#### 2. Generate Diffs
 
 ```
 $ mkdir folder_for_my_diffs
@@ -68,7 +68,7 @@ _The date is the cut off point for commits. You will get a diff between the very
 
 _`/var/repo` is where Phabricator stores it's repositories. This is probably the same for you unless you set a different location._
 
-#### Turn the Diff Files into Differential Revisions
+#### 3. Turn the Diff Files into Differential Revisions
 
 _Be careful running this command, each time you run it you will generate new Differential Revisions. You only want to run this once to avoid getting duplicates._
 
@@ -78,5 +78,9 @@ $ python proph.py load-diffs /shared_volume/folder_for_my_diffs 69
 
 _The '69' is the project number again. Make sure it matches the one you used in the `create-marker-groups` command earlier in this walkthrough._
 
+#### 4. ....
 
+#### 5. Profit
+
+You should be done now! Make sure you noted any diffs which had issues so you can follow them up manually.
 
