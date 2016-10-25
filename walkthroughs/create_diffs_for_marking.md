@@ -14,8 +14,8 @@ It is worth your time to read through it and understand what it's doing.
 You should definitely read the info for the following commands:
 
 - [`create-marker-groups`](/README.md#create-marker-groups)
-- `generate-diffs`
-- `load-diffs`
+- [`generate-diffs`](/README.md#generate-diffs)
+- [`load-diffs`](/README.md#load-diffs)
 
 ### Assumptions
 
