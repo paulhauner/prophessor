@@ -59,7 +59,7 @@ _The `markers.csv` file is used to allocate groups evenly and randomly (randomly
 #### 2. Generate Diffs
 
 ```
-$ mkdir folder_for_my_diffs
+$ mkdir /shared_volume/folder_for_my_diffs
 $ python proph.py generate-diffs 2012-09-01 /var/repo /shared_volume/folder_for_my_diffs
 ```
 _The folder you use for your diffs is arbitrary._
