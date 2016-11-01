@@ -9,6 +9,9 @@ diff_revision_policy_update_sql = """UPDATE default_differential.differential_re
     SET viewPolicy = %s,editPolicy = %s
     WHERE id = %s"""
 
+get_diff_revisions_sql = """SELECT title, phid, id 
+FROM default_differential.differential_revision
+"""
 
 diff_reviewer_update_sql = """INSERT INTO default_differential.edge
     (src, dst, type, dateCreated, seq)
@@ -25,6 +28,24 @@ class Diff():
         result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
         if result:
             return result[phabed_name]['phid']
+    
+    def get_all_diffs(self):
+        connection = db.connect()
+
+        cursor = connection.cursor()
+        cursor.execute(get_diff_revisions_sql)
+
+        result = []
+        for row in cursor:
+            result.append({
+                'title': row['title'],
+                'phid': row['phid'],
+                'id': row['id'],
+            })
+
+        db.disconnect(connection)
+
+        return result
 
     def create_raw(self, diff):
         """

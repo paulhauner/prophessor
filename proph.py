@@ -297,6 +297,38 @@ elif arg_task == 'print-callsign-mappings':
     action.print_callsign_mappings()
     thanks()
 
+elif arg_task == 'grant-student-diff-access':
+    # python proph.py grant-student-diff-access students.csv 1234
+    part = int(sys.argv[2])
+    all_diffs = phab_diff.get_all_diffs()
+    for diff in all_diffs:
+        group_number = group_translator.get_group_number_from_project_name(diff['title'])
+        project_number = group_translator.get_project_number_from_project_name(diff['title'])
+	if project_number == part:
+	    # note: if your student groups differ from marking groups, you can use the commented out line below
+            # make sure you change the number (1) to the student group you want to use.
+	    student_project_name = group_translator.build_project_name(group_number, 1, False)
+	    # student_project_name = group_translator.build_project_name(group_number, project_number, False)
+	    marking_project_name = group_translator.build_project_name(group_number, project_number, True)
+	    student_project_phid = phab_project.get_phid_from_name(student_project_name)
+	    marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
+            if marking_project_phid is not None and student_project_phid is not None:
+	        policy = phab_policy.create_project_policy([student_project_phid, marking_project_phid])
+		phab_diff.set_revision_policy(diff['id'], policy, policy)
+		print('Diff %s was assigned policy %s (View,Edit) allowing access from student group %s and marking group %s' % (
+		    diff['title'],
+		    policy, 
+		    student_project_name,
+		    marking_project_name,
+		))
+	    else:
+		print('ERROR: Unable to determine student and/or marking groups for %s' % diff['title'])
+        else:
+	    # these diff are not belong to us (probably from a different project)
+            pass
+
+    thanks()
+
 elif arg_task == 'generate-diffs':
     # python proph.py generate-diffs 2016-09-25 /var/repo /shared_volume/generated_diffs
     date = sys.argv[2]
