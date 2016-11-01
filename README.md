@@ -167,6 +167,25 @@ Example: `$ python proph.py load-diffs example_files/diffs/ 1`
 
 
 
+### grant-student-diff-access
+
+```
+$ python proph.py grant-student-diff-access <project number>
+```
+
+_Requires API and access to the Phabricator database_
+
+
+Iterate through all Differential Revisions which match the project number. Matching is determined
+by running a regex on the name of the Revision.
+
+For each of the matching revisions, add a custom view policy which allows View and Edit permissions 
+by both the students group and the markers group.
+
+This is useful for when markers have finished marking Revisions and they would like the
+students to have access to read comments and review.
+
+Example: `$ python proph.py grant-student-diff-access 1`
 
 
 ### generate-diffs
