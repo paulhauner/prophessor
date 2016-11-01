@@ -12,6 +12,10 @@ This is a software package designed to automate some specific tasks related to u
 
 This package is biased towards and designed for lectures by Luke Anderson.
 
+I am have started writing walkthroughs to document the procedures for common actions:
+
+- [Creating Diffs for Marking](/walkthroughs/create_diffs_for_marking.md)
+
 ## Usage
 
 Commands are executed by running `proph.py` from Python with arguments.
