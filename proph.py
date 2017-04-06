@@ -247,7 +247,7 @@ class CreateProjects():
 
 def thanks():
     print("")
-    print("Task complete. (  " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
+    print("Task complete. ( " + u"\uff65\u203f\uff65" + " )")
 
 # Parse arguments to do stuff
 
