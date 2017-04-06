@@ -17,14 +17,14 @@ class LoadRawDiffs():
     def print_callsign_mappings(self):
         callsign_mappings = phab_diff.get_callsign_mapping()
         for mapping in callsign_mappings:
-	    print('{0}\t{1}'.format(mapping['callsign'], mapping['name']))
+            print('{0}\t{1}'.format(mapping['callsign'], mapping['name']))
 
     def print_diff_mappings(self, dir):
         diff_files = submitted_diffs.get_all(dir)
         for diff_file in diff_files:
             callsign_mappings = phab_diff.get_callsign_mapping()
             group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
-	    print('Diff file {0} is by group {1}'.format(diff_file, group_number))
+            print('Diff file {0} is by group {1}'.format(diff_file, group_number))
 
     def go(self, dir, project_part):
         diff_files = submitted_diffs.get_all(dir)
@@ -247,7 +247,7 @@ class CreateProjects():
 
 def thanks():
     print("")
-    print("Task complete. ( " + u"\uff65\u203f\uff65" + " )")
+    print("Task complete. ( " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
 
 # Parse arguments to do stuff
 
@@ -304,27 +304,27 @@ elif arg_task == 'grant-student-diff-access':
     for diff in all_diffs:
         group_number = group_translator.get_group_number_from_project_name(diff['title'])
         project_number = group_translator.get_project_number_from_project_name(diff['title'])
-	if project_number == part:
-	    # note: if your student groups differ from marking groups, you can use the commented out line below
+        if project_number == part:
+            # note: if your student groups differ from marking groups, you can use the commented out line below
             # make sure you change the number (1) to the student group you want to use.
-	    student_project_name = group_translator.build_project_name(group_number, 1, False)
-	    # student_project_name = group_translator.build_project_name(group_number, project_number, False)
-	    marking_project_name = group_translator.build_project_name(group_number, project_number, True)
-	    student_project_phid = phab_project.get_phid_from_name(student_project_name)
-	    marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
+            student_project_name = group_translator.build_project_name(group_number, 1, False)
+            # student_project_name = group_translator.build_project_name(group_number, project_number, False)
+            marking_project_name = group_translator.build_project_name(group_number, project_number, True)
+            student_project_phid = phab_project.get_phid_from_name(student_project_name)
+            marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
             if marking_project_phid is not None and student_project_phid is not None:
-	        policy = phab_policy.create_project_policy([student_project_phid, marking_project_phid])
-		phab_diff.set_revision_policy(diff['id'], policy, policy)
-		print('Diff %s was assigned policy %s (View,Edit) allowing access from student group %s and marking group %s' % (
-		    diff['title'],
-		    policy, 
-		    student_project_name,
-		    marking_project_name,
-		))
-	    else:
-		print('ERROR: Unable to determine student and/or marking groups for %s' % diff['title'])
+                policy = phab_policy.create_project_policy([student_project_phid, marking_project_phid])
+                phab_diff.set_revision_policy(diff['id'], policy, policy)
+                print('Diff %s was assigned policy %s (View,Edit) allowing access from student group %s and marking group %s' % (
+                    diff['title'],
+                    policy,
+                    student_project_name,
+                    marking_project_name,
+                ))
+            else:
+                print('ERROR: Unable to determine student and/or marking groups for %s' % diff['title'])
         else:
-	    # these diff are not belong to us (probably from a different project)
+            # these diff are not belong to us (probably from a different project)
             pass
 
     thanks()
