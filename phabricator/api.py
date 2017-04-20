@@ -35,8 +35,8 @@ phab_api_templates = {
     },
     "create_repository": {
         "method": "repository.create",
-        "data": "api.token=" + PHAB_API_TOKEN + "&name=%s&vcs=%s",
-        "args": ("name", "icon")
+        "data": "api.token=" + PHAB_API_TOKEN + "&name=%s&callsign=%s&uri=%s&vcs=%s",
+        "args": ("name", "callsign", "uri", "vcs")
     },
     "create_raw_diff": {
         "method": "differential.createrawdiff",

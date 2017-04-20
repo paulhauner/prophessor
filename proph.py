@@ -5,10 +5,12 @@ from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
 from automation.generate_diffs_from_phab_repos import GenerateDiffs
 from automation.diffs import diffs as submitted_diffs
+from automation.repos import repos as repos_util
 from phabricator.project import project as phab_project
 from phabricator.user import user as phab_user
 from phabricator.diff import diff as phab_diff
 from phabricator.policy import policy as phab_policy
+from phabricator.repository import repository as phab_repo
 
 arg_task = sys.argv[1]
 
@@ -243,6 +245,34 @@ class CreateProjects():
                 print("Skipped: %s" % (group_code,))
 
 
+class CreateRepos():
+    def go(self, csv, repo_name):
+        """
+        create_repos creates repositories in Phabricator from a csv.
+        :param csv: csv entries of each student and their group.
+        :param repo_name: Name that each repository will be given.
+        :return: None.
+        """
+
+        """
+        TODO: Figure out if we need any of the optional fields in repository.create
+        TODO: Figure out how to connect a Repository to a Project/Group
+                - This will involve changing policy settings for each repo.
+                - Not figured out yet!
+        """
+        groups = load_group_membership.unique_groups(csv)
+        for group_code in groups:
+            group_num = group_translator.get_group_number_from_group_code(group_code)
+
+            if group_num:
+                callsign = repos_util.callsign_from_group_num(group_num)
+                uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+
+                phab_repo.create(repo_name, callsign, uri)
+                print("Created repo for group: %s" % (group_num,))
+            else:
+                print("Skipped: %s" % (group_code,))
+
 
 
 def thanks():
@@ -278,6 +308,12 @@ elif arg_task == 'create-marker-groups':
     action.create_marking_projects(sys.argv[2], sys.argv[3], part, True)
     thanks()
 
+elif arg_task == 'create-repos':
+    # python proph.py create-repos students.csv Project
+    action = CreateRepos()
+    action.go(sys.argv[2], sys.argv[3])
+    thanks()
+
 elif arg_task == 'load-diffs':
     # python proph.py load-diffs diffs/ 1234
     part = int(sys.argv[3])
@@ -286,7 +322,7 @@ elif arg_task == 'load-diffs':
     thanks()
 
 elif arg_task == 'print-diff-mappings':
-    # python proph.py print-diff-mappings diffs/ 
+    # python proph.py print-diff-mappings diffs/
     action = LoadRawDiffs()
     action.print_diff_mappings(sys.argv[2])
     thanks()
