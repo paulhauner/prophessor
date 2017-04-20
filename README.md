@@ -138,6 +138,29 @@ Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
 
 
 
+### create-repos
+
+```
+$ python proph.py create-repos <students csv file> <repo name>
+```
+
+_Requires API and access to docker container_
+
+Create Phab repositories for each Group/Project as per the specified csv file.
+
+`<students csv file>` is used to get the list of groups.
+
+`<repo name>` is the name that all repositories will be given. Note that repositories will be unique based on their callsign.
+
+See `example_files/students.csv` for an example of the `<students csv file>`
+
+Example: `$ python proph.py create-repos example_files/students.csv Project`
+
+
+
+
+
+
 ### load-diffs
 
 ```
