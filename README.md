@@ -152,6 +152,8 @@ Create Phab repositories for each Group/Project as per the specified csv file.
 
 `<repo name>` is the name that all repositories will be given. Note that repositories will be unique based on their callsign.
 
+See `walkthroughs/create_repos.md` for details on parts of repository creation that this command does not cover.
+
 See `example_files/students.csv` for an example of the `<students csv file>`
 
 Example: `$ python proph.py create-repos example_files/students.csv Project`
