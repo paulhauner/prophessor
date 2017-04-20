@@ -265,19 +265,20 @@ class CreateRepos():
             group_num = group_translator.get_group_number_from_group_code(group_code)
 
             if group_num:
-                student_project_name = group_translator.build_project_name(group_num, 1, False)
-                student_project_phid = phab_project.get_phid_from_name(student_project_name)
+                #student_project_name = group_translator.build_project_name(group_num, 1, False)
+                #student_project_phid = phab_project.get_phid_from_name(student_project_name)
+                student_project_phid = ""
 
-                if student_project_phids is not None:
+                if student_project_phid is not None:
                     callsign = repos_util.callsign_from_group_num(group_num)
                     uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
 
-                    #phab_repo.create(repo_name, callsign, uri)
+                    phab_repo.create(repo_name, callsign, uri)
 
                     # Sets the repository to be "Hosted on Phabricator".
                     #phab_repo.set_repository_phab_hosted(callsign)
 
-                    print(student_project_phids)
+                    #print(student_project_phids)
                     #policy = phab_policy.create_project_policy([student_project_phid])
                     #phab_repo.set_repository_policy(callsign, policy, policy, policy)
 
