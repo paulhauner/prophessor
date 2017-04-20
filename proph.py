@@ -256,20 +256,39 @@ class CreateRepos():
 
         """
         TODO: Figure out if we need any of the optional fields in repository.create
-        TODO: Figure out how to connect a Repository to a Project/Group
-                - This will involve changing policy settings for each repo.
-                - Not figured out yet!
+        TODO: Test out that repositories are given the proper policies.
+        TODO: Figure out how to set each repository to Hosted on Phabricator.
+                - Check the database for what the differences are between a phab repo and foreign repo.
         """
         groups = load_group_membership.unique_groups(csv)
         for group_code in groups:
             group_num = group_translator.get_group_number_from_group_code(group_code)
 
             if group_num:
-                callsign = repos_util.callsign_from_group_num(group_num)
-                uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+                student_project_name = group_translator.build_project_name(group_num, 1, False)
+                student_project_phid = phab_project.get_phid_from_name(student_project_name)
 
-                phab_repo.create(repo_name, callsign, uri)
-                print("Created repo for group: %s" % (group_num,))
+                if student_project_phids is not None:
+                    callsign = repos_util.callsign_from_group_num(group_num)
+                    uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+
+                    #phab_repo.create(repo_name, callsign, uri)
+
+                    # Sets the repository to be "Hosted on Phabricator".
+                    #phab_repo.set_repository_phab_hosted(callsign)
+
+                    print(student_project_phids)
+                    #policy = phab_policy.create_project_policy([student_project_phid])
+                    #phab_repo.set_repository_policy(callsign, policy, policy, policy)
+
+                    print("Created repo for group: %s" % (group_num,))
+                    #print("Repo %s was assigned policy %s (View,Edit,Push) allowing access from student group %s" % (
+                    #    callsign,
+                    #    policy,
+                    #    student_project_name,
+                    #))
+                else:
+                    print("ERROR: Unable to determine student groups for group %s" % (group_num,))
             else:
                 print("Skipped: %s" % (group_code,))
 
