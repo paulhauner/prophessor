@@ -5,10 +5,12 @@ from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
 from automation.generate_diffs_from_phab_repos import GenerateDiffs
 from automation.diffs import diffs as submitted_diffs
+from automation.repos import repos as repos_util
 from phabricator.project import project as phab_project
 from phabricator.user import user as phab_user
 from phabricator.diff import diff as phab_diff
 from phabricator.policy import policy as phab_policy
+from phabricator.repository import repository as phab_repo
 
 arg_task = sys.argv[1]
 
@@ -17,14 +19,14 @@ class LoadRawDiffs():
     def print_callsign_mappings(self):
         callsign_mappings = phab_diff.get_callsign_mapping()
         for mapping in callsign_mappings:
-	    print('{0}\t{1}'.format(mapping['callsign'], mapping['name']))
+            print('{0}\t{1}'.format(mapping['callsign'], mapping['name']))
 
     def print_diff_mappings(self, dir):
         diff_files = submitted_diffs.get_all(dir)
         for diff_file in diff_files:
             callsign_mappings = phab_diff.get_callsign_mapping()
             group_number = submitted_diffs.get_diff_group_number(diff_file, callsign_mappings=callsign_mappings)
-	    print('Diff file {0} is by group {1}'.format(diff_file, group_number))
+            print('Diff file {0} is by group {1}'.format(diff_file, group_number))
 
     def go(self, dir, project_part):
         diff_files = submitted_diffs.get_all(dir)
@@ -243,11 +245,70 @@ class CreateProjects():
                 print("Skipped: %s" % (group_code,))
 
 
+class CreateRepos():
+    def create_repos(self, csv, repo_name):
+        """
+        create_repos creates repositories in Phabricator from a csv.
+        :param csv: csv entries of each student and their group.
+        :param repo_name: Name that each repository will be given.
+        :return: None.
+        """
+        groups = load_group_membership.unique_groups(csv)
+        for group_code in groups:
+            group_num = group_translator.get_group_number_from_group_code(group_code)
+
+            if group_num:
+                callsign = repos_util.callsign_from_group_num(group_num)
+                uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+
+                phab_repo.create(repo_name, callsign, uri)
+
+                # Sets the repository to be "Hosted on Phabricator".
+                details = phab_repo.get_repository_phab_hosted(callsign)
+                details = details.replace('importing":true', 'importing":false')
+                details = details.replace('false}', 'false,"hosting-enabled":true}')
+                phab_repo.set_repository_phab_hosted(details, callsign)
+
+                print("Created repo for group: %s" % (group_num,))
+            else:
+                print("Skipped: %s" % (group_code,))
+
+    def lockdown_repos(self, csv):
+        """
+        lockdown_repos sets custom policies on the repositories, such that only
+        project members can view, edit, and push their repository.
+        :param csv: csv entries of each student and their group.
+        :return: None.
+        """
+        groups = load_group_membership.unique_groups(csv)
+        for group_code in groups:
+            group_num = group_translator.get_group_number_from_group_code(group_code)
+
+            if group_num:
+                student_project_name = group_translator.build_project_name(group_num, 1, False)
+                student_project_phid = phab_project.get_phid_from_name(student_project_name)
+
+                if student_project_phid is not None:
+                    callsign = repos_util.callsign_from_group_num(group_num)
+
+                    # Sets the repository policy to only the Project members.
+                    policy = phab_policy.create_project_policy([student_project_phid])
+                    phab_repo.set_repository_policy(callsign, policy, policy, policy)
+
+                    print("Repo %s was assigned policy %s (View,Edit,Push) allowing access from student group %s" % (
+                        callsign,
+                        policy,
+                        student_project_name,
+                    ))
+                else:
+                    print("ERROR: Unable to determine student groups for group %s" % (group_num,))
+            else:
+                print("Skipped: %s" % (group_code,))
 
 
 def thanks():
     print("")
-    print("Task complete. (  " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
+    print("Task complete. ( " + u"\uff65\u203f\uff65".encode('utf-8') + " )")
 
 # Parse arguments to do stuff
 
@@ -278,6 +339,18 @@ elif arg_task == 'create-marker-groups':
     action.create_marking_projects(sys.argv[2], sys.argv[3], part, True)
     thanks()
 
+elif arg_task == 'create-repos':
+    # python proph.py create-repos students.csv Project
+    action = CreateRepos()
+    action.create_repos(sys.argv[2], sys.argv[3])
+    thanks()
+
+elif arg_task == 'lockdown-repos':
+    # python proph.py lockdown-repos students.csv
+    action = CreateRepos()
+    action.lockdown_repos(sys.argv[2])
+    thanks()
+
 elif arg_task == 'load-diffs':
     # python proph.py load-diffs diffs/ 1234
     part = int(sys.argv[3])
@@ -286,7 +359,7 @@ elif arg_task == 'load-diffs':
     thanks()
 
 elif arg_task == 'print-diff-mappings':
-    # python proph.py print-diff-mappings diffs/ 
+    # python proph.py print-diff-mappings diffs/
     action = LoadRawDiffs()
     action.print_diff_mappings(sys.argv[2])
     thanks()
@@ -304,27 +377,27 @@ elif arg_task == 'grant-student-diff-access':
     for diff in all_diffs:
         group_number = group_translator.get_group_number_from_project_name(diff['title'])
         project_number = group_translator.get_project_number_from_project_name(diff['title'])
-	if project_number == part:
-	    # note: if your student groups differ from marking groups, you can use the commented out line below
+        if project_number == part:
+            # note: if your student groups differ from marking groups, you can use the commented out line below
             # make sure you change the number (1) to the student group you want to use.
-	    student_project_name = group_translator.build_project_name(group_number, 1, False)
-	    # student_project_name = group_translator.build_project_name(group_number, project_number, False)
-	    marking_project_name = group_translator.build_project_name(group_number, project_number, True)
-	    student_project_phid = phab_project.get_phid_from_name(student_project_name)
-	    marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
+            student_project_name = group_translator.build_project_name(group_number, 1, False)
+            # student_project_name = group_translator.build_project_name(group_number, project_number, False)
+            marking_project_name = group_translator.build_project_name(group_number, project_number, True)
+            student_project_phid = phab_project.get_phid_from_name(student_project_name)
+            marking_project_phid = phab_project.get_phid_from_name(marking_project_name)
             if marking_project_phid is not None and student_project_phid is not None:
-	        policy = phab_policy.create_project_policy([student_project_phid, marking_project_phid])
-		phab_diff.set_revision_policy(diff['id'], policy, policy)
-		print('Diff %s was assigned policy %s (View,Edit) allowing access from student group %s and marking group %s' % (
-		    diff['title'],
-		    policy, 
-		    student_project_name,
-		    marking_project_name,
-		))
-	    else:
-		print('ERROR: Unable to determine student and/or marking groups for %s' % diff['title'])
+                policy = phab_policy.create_project_policy([student_project_phid, marking_project_phid])
+                phab_diff.set_revision_policy(diff['id'], policy, policy)
+                print('Diff %s was assigned policy %s (View,Edit) allowing access from student group %s and marking group %s' % (
+                    diff['title'],
+                    policy,
+                    student_project_name,
+                    marking_project_name,
+                ))
+            else:
+                print('ERROR: Unable to determine student and/or marking groups for %s' % diff['title'])
         else:
-	    # these diff are not belong to us (probably from a different project)
+            # these diff are not belong to us (probably from a different project)
             pass
 
     thanks()

@@ -1,0 +1,3 @@
+To add custom hook scripts to this repository, add them to this directory.
+
+Phabricator will run any executables in this directory after running its own checks, as though they were normal hook scripts.

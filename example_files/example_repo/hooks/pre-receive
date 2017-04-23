@@ -1,0 +1,3 @@
+#!/bin/sh
+export TERM=dumb
+exec '/usr/bin/php' -f '/opt/phabricator/bin/commit-hook' -- 'CALLSIGN' "$@"

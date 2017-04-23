@@ -28,7 +28,7 @@ class Diff():
         result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
         if result:
             return result[phabed_name]['phid']
-    
+
     def get_all_diffs(self):
         connection = db.connect()
 

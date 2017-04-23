@@ -22,7 +22,7 @@ Commands are executed by running `proph.py` from Python with arguments.
 
 For example:
 ```
-$python proph.py enroll students.csv
+$ python proph.py enroll students.csv
 ```
 
 This script uses a variety of methods to communicate with Phabricator:
@@ -30,14 +30,15 @@ This script uses a variety of methods to communicate with Phabricator:
 - Arcanist
 - Phabricator RESTful API
 - Phabricator PHP files
-- Direct access to the Phabricator SQL database.
+- Direct access to the Phabricator SQL database
 
 Some of the above mentioned methods are able to be run remotely and others must be run from the Phabricator server.
-The most fail-safe way to run this script is on the Phabricator server, all functions will are supported when run
-directly on the Phabricator server with access to the Phab db, Phab PHP files, Arcanist and the RESTful API.
+The most fail-safe way to run this script is on the Phabricator server, where all functions are supported, with access
+to the Phab db, Phab PHP files, Arcanist and the RESTful API.
 
-Some configuration is required for each Phabricator instance. All of these settings are available in the
-`local_settings.py` file.
+Some configuration is required for each Phabricator instance. All of these settings should be made available in
+`local_settings.py`, which you will need to create. An example is provided in the
+`example_files/example_local_settings.py` file.
 
 ## Commands
 
@@ -137,6 +138,53 @@ Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
 
 
 
+### create-repos
+
+```
+$ python proph.py create-repos <students csv file> <repo name>
+```
+
+_Requires API, access to the Phabricator database and must be run on the Phabricator server_
+
+Create Phab repositories for each Group/Project as per the specified csv file.
+
+`<students csv file>` is used to get the list of groups.
+
+`<repo name>` is the name that all repositories will be given. Note that repositories will be unique based on their callsign.
+
+See `example_files/students.csv` for an example of the `<students csv file>`.
+
+Example: `$ python proph.py create-repos example_files/students.csv Project`
+
+
+
+
+
+
+### lockdown-repos
+
+```
+$ python proph.py lockdown-repos <students csv file>
+```
+
+_Requires API and access to the Phabricator database_
+
+**Before running this command you should have already ran `create-student-groups` and `create-repos`**
+
+Lock down the permissions for the repositories. Each repository will have view, edit, and push policies
+restricted to the project that they belong to.
+
+`<students csv file>` is used to get the list of groups.
+
+See `example_files/students.csv` for an example of the `<students csv file>`.
+
+Example: `$ python proph.py lockdown-repos example_files/students.csv`
+
+
+
+
+
+
 ### load-diffs
 
 ```
@@ -155,7 +203,7 @@ Import all git diff files with `.diff` extension from the `<directory of diffs>`
 - Determine the group number from the `.diff` filename and give view and edit permissions for the Revision
 to the marking group which matches the group number and `<project number>` specified.
 
-Determining the group number is handled by prophessor one of the following methods:
+Determining the group number is handled by prophessor using one of the following methods:
 
  - Determine the group using a regex pattern from the file name.
  - Obtain a list of Diffusion 'callsigns' from Phabricator and check for filename matches
@@ -199,12 +247,12 @@ _Requires the RESTful API, Arcanist and access to the Phabricator database_
 Scan the `<phabricator repos dir>` and attempt the following on each repository it finds:
  - Obtain the earliest commit on the `master` branch
  - Obtain the latest commit on the `master` branch _before_ the specified `<final submission date>`
- - Create a differential file inside the `<dir to output diff files>` with respect to the previous two commits.
+ - Create a differential file inside the `<dir to output diff files>` with respect to the two commits mentioned above.
 
 The `<phabricator repos dir>` is the folder in which Phabricator stores it's local repositories.
 Historically, this folder is located at `/var/repo`.
 
-The `<dir to outpuy diff files>` is arbitrary.
+The `<dir to output diff files>` is arbitrary.
 You will most likely specify this folder as the `<directory of diffs>` folder when running the
 `load-diffs` prophessor command.
 
