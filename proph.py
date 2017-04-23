@@ -266,7 +266,7 @@ class CreateRepos():
                 # Sets the repository to be "Hosted on Phabricator".
                 details = phab_repo.get_repository_phab_hosted(callsign)
                 details = details.replace('importing":true', 'importing":false')
-                details = details.replace('false}', 'false,"hosting-enabled":true}')
+                details = details.replace('false}', 'false,"hosting-enabled":true,"serve-over-http":"readwrite"}')
                 phab_repo.set_repository_phab_hosted(details, callsign)
 
                 print("Created repo for group: %s" % (group_num,))
