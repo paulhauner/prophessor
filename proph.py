@@ -246,11 +246,38 @@ class CreateProjects():
 
 
 class CreateRepos():
-    def go(self, csv, repo_name):
+    def create_repos(self, csv, repo_name):
         """
         create_repos creates repositories in Phabricator from a csv.
         :param csv: csv entries of each student and their group.
         :param repo_name: Name that each repository will be given.
+        :return: None.
+        """
+        groups = load_group_membership.unique_groups(csv)
+        for group_code in groups:
+            group_num = group_translator.get_group_number_from_group_code(group_code)
+
+            if group_num:
+                callsign = repos_util.callsign_from_group_num(group_num)
+                uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+
+                phab_repo.create(repo_name, callsign, uri)
+
+                # Sets the repository to be "Hosted on Phabricator".
+                details = phab_repo.get_repository_phab_hosted(callsign)
+                details = details.replace('importing":true', 'importing":false')
+                details = details.replace('false}', 'false,"hosting-enabled":true}')
+                phab_repo.set_repository_phab_hosted(details, callsign)
+
+                print("Created repo for group: %s" % (group_num,))
+            else:
+                print("Skipped: %s" % (group_code,))
+
+    def lockdown_repos(self, csv):
+        """
+        lockdown_repos sets custom policies on the repositories, such that only
+        project members can view, edit, and push their repository.
+        :param csv: csv entries of each student and their group.
         :return: None.
         """
         groups = load_group_membership.unique_groups(csv)
@@ -263,21 +290,11 @@ class CreateRepos():
 
                 if student_project_phid is not None:
                     callsign = repos_util.callsign_from_group_num(group_num)
-                    uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
-
-                    phab_repo.create(repo_name, callsign, uri)
-
-                    # Sets the repository to be "Hosted on Phabricator".
-                    details = phab_repo.get_repository_phab_hosted(callsign)
-                    details = details.replace('importing":true', 'importing":false')
-                    details = details.replace('false}', 'false,"hosting-enabled":true}')
-                    phab_repo.set_repository_phab_hosted(details, callsign)
 
                     # Sets the repository policy to only the Project members.
                     policy = phab_policy.create_project_policy([student_project_phid])
                     phab_repo.set_repository_policy(callsign, policy, policy, policy)
 
-                    print("Created repo for group: %s" % (group_num,))
                     print("Repo %s was assigned policy %s (View,Edit,Push) allowing access from student group %s" % (
                         callsign,
                         policy,
@@ -287,7 +304,6 @@ class CreateRepos():
                     print("ERROR: Unable to determine student groups for group %s" % (group_num,))
             else:
                 print("Skipped: %s" % (group_code,))
-
 
 
 def thanks():
@@ -326,7 +342,13 @@ elif arg_task == 'create-marker-groups':
 elif arg_task == 'create-repos':
     # python proph.py create-repos students.csv Project
     action = CreateRepos()
-    action.go(sys.argv[2], sys.argv[3])
+    action.create_repos(sys.argv[2], sys.argv[3])
+    thanks()
+
+elif arg_task == 'lockdown-repos':
+    # python proph.py lockdown-repos students.csv
+    action = CreateRepos()
+    action.lockdown_repos(sys.argv[2])
     thanks()
 
 elif arg_task == 'load-diffs':
