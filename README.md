@@ -22,7 +22,7 @@ Commands are executed by running `proph.py` from Python with arguments.
 
 For example:
 ```
-$python proph.py enroll students.csv
+$ python proph.py enroll students.csv
 ```
 
 This script uses a variety of methods to communicate with Phabricator:
@@ -144,7 +144,7 @@ Example: `$ python proph.py create-marker-groups example_files/markers.csv 1`
 $ python proph.py create-repos <students csv file> <repo name>
 ```
 
-_Requires API and access to docker container_
+_Requires API, access to the Phabricator database and must be run on the Phabricator server_
 
 Create Phab repositories for each Group/Project as per the specified csv file.
 
@@ -152,11 +152,33 @@ Create Phab repositories for each Group/Project as per the specified csv file.
 
 `<repo name>` is the name that all repositories will be given. Note that repositories will be unique based on their callsign.
 
-See `walkthroughs/create_repos.md` for details on parts of repository creation that this command does not cover.
-
-See `example_files/students.csv` for an example of the `<students csv file>`
+See `example_files/students.csv` for an example of the `<students csv file>`.
 
 Example: `$ python proph.py create-repos example_files/students.csv Project`
+
+
+
+
+
+
+### lockdown-repos
+
+```
+$ python proph.py lockdown-repos <students csv file>
+```
+
+_Requires API and access to the Phabricator database_
+
+**Before running this command you should have already ran `create-student-groups` and `create-repos`**
+
+Lock down the permissions for the repositories. Each repository will have view, edit, and push policies
+restricted to the project that they belong to.
+
+`<students csv file>` is used to get the list of groups.
+
+See `example_files/students.csv` for an example of the `<students csv file>`.
+
+Example: `$ python proph.py lockdown-repos example_files/students.csv`
 
 
 
