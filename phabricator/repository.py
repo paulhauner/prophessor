@@ -1,14 +1,19 @@
 import os
 import subprocess
 from .api import api_call
+from database import db
 
 repository_policy_update_sql = """UPDATE default_repository.repository
     SET viewPolicy = %s,editPolicy = %s,pushPolicy = %s
     WHERE callsign = %s"""
 
-repository_phab_hosted_sql = """UPDATE default_repository.TODO
-    SET TODO = %s
-    WHERE TODO = %s"""
+repository_hosted_select_sql = """SELECT details
+    FROM default_repository.repository
+    WHERE callsign = %s"""
+
+repository_hosted_update_sql = """UPDATE default_repository.repository
+    SET details = %s
+    WHERE callsign = %s"""
 
 class Repository():
     def create(self, name, callsign, uri, vcs="git"):
@@ -43,11 +48,26 @@ class Repository():
         db.commit(connection)
         db.disconnect(connection)
 
-    def set_repository_phab_hosted(self, callsign):
+    def get_repository_phab_hosted(self, callsign):
         connection = db.connect()
 
         with connection.cursor() as cursor:
-            cursor.execute(repository_phab_hosted_sql, (""" TODO """, callsign))
+            cursor.execute(repository_hosted_select_sql, (callsign,))
+
+            # Should only return one row.
+            result = []
+            for row in cursor:
+                result = row['details']
+
+        db.disconnect(connection)
+
+        return result
+
+    def set_repository_phab_hosted(self, details, callsign):
+        connection = db.connect()
+
+        with connection.cursor() as cursor:
+            cursor.execute(repository_hosted_update_sql, (details, callsign))
 
         db.commit(connection)
         db.disconnect(connection)
