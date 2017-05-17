@@ -305,6 +305,39 @@ class CreateRepos():
             else:
                 print("Skipped: %s" % (group_code,))
 
+    # TODO: This works, but will be quite slow (need to push to each repo)
+    #                       and admin will need to keep typing phab username and password.
+    def push_to_repos(self, csv, base_repo, name, email):
+        """
+        push_to_repos pushes the given base repository to the previously
+        created repositories, as a single initial commit. This means that the
+        base repository's git history will not be preserved.
+        :param csv: csv entries of each student and their group.
+        :param base_repo: URL to the base repository.
+        :param name: The desired name to appear in the initial commit.
+        :param email: The desired email to appear in the initial commit.
+        :return: None.
+        """
+        groups = load_group_membership.unique_groups(csv)
+
+        # This will also set git to cache the next credentials used for 15 mins (Phab admin account).
+        phab_repo.clone_base_repo(base_repo, name, email)
+
+        for group_code in groups:
+            group_num = group_translator.get_group_number_from_group_code(group_code)
+
+            if group_num:
+                callsign = repos_util.callsign_from_group_num(group_num)
+                uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
+
+                phab_repo.push_to_repo(uri)
+
+                print("Pushed base repo for group: %s" % (group_num,))
+            else:
+                print("Skipped: %s", %(group_code,))
+
+
+
 
 def thanks():
     print("")
@@ -349,6 +382,12 @@ elif arg_task == 'lockdown-repos':
     # python proph.py lockdown-repos students.csv
     action = CreateRepos()
     action.lockdown_repos(sys.argv[2])
+    thanks()
+
+elif arg_task == 'push-to-repos':
+    # python proph.py lockdown-repos students.csv https://repo.website/path/to/repo "Elie Moreau" "example@gmail.com"
+    action = CreateRepos()
+    action.push_to_repos(sys.argv[2:])
     thanks()
 
 elif arg_task == 'load-diffs':

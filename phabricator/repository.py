@@ -19,9 +19,9 @@ class Repository():
     def create(self, name, callsign, uri, vcs="git"):
         """
         Creates a Phab Repository with the given name and callsign.
-        :param name: The name of the repository
-        :param callsign: The callsign of the repository (unique)
-        :return: The result from the api call
+        :param name: The name of the repository.
+        :param callsign: The callsign of the repository (unique).
+        :return: The result from the api call.
         """
         result = api_call.template("create_repository", (name, callsign, uri, vcs))
 
@@ -71,5 +71,44 @@ class Repository():
 
         db.commit(connection)
         db.disconnect(connection)
+
+    def clone_base_repo(self, base_repo, name, email):
+        """
+        Clones the given base repository, makes an initial commit, and add a
+        sample 'origin' remote.
+        :param base_repo: URL to the base repository.
+        :param name: The desired name to appear in the initial commit.
+        :param email: The desired email to appear in the initial commit.
+        :return: None.
+        """
+
+        commands = ['git clone %s base_repo' % (base_repo,),
+                    'cd base_repo',
+                    'rm -rf .git/',
+                    'git init',
+                    'git add *',
+                    'git config user.name "%s"' % (name,),
+                    'git config user.email "%s"' % (email,),
+                    'git commit -m "Initial Commit."',
+                    'git remote add origin https://sample_remote',
+                    'git config --global credential.helper cache']
+
+        p1 = subprocess.Popen(' && ',join(commands), shell=True)
+        p1.wait()
+
+
+    def push_to_repo(self, uri):
+        """
+        Pushes the base repository to the given uri repository.
+        :param uri: The uri of the group repository.
+        :return: None.
+        """
+
+        commands = ['git remote set-url origin %s' % (uri,),
+                    'git push --quiet origin master']
+
+        p1 = subprocess.Popen(' && '.join(commands), shell=True)
+        p1.wait()
+
 
 repository = Repository()
