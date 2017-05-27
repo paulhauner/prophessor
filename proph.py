@@ -411,5 +411,15 @@ elif arg_task == 'generate-diffs':
     action.from_phabricator_repos(repos, output, date)
     thanks()
 
+elif arg_task == 'generate-diffs-between':
+    # python proph.py generate-diffs 2016-09-01 2016-09-25 /var/repo /shared_volume/generated_diffs
+    start_date = sys.argv[2]
+    end_date = sys.argv[3]
+    repos = sys.argv[4]
+    output = sys.argv[5]
+    action = GenerateDiffs()
+    action.from_phabricator_repos(repos, output, start_date, end_date)
+    thanks()
+
 else:
     print("Unknown command. " + u"\u00af\_(\u30c4)_/\u00af".encode('utf-8'))
