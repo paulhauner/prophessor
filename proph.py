@@ -403,22 +403,15 @@ elif arg_task == 'grant-student-diff-access':
     thanks()
 
 elif arg_task == 'generate-diffs':
-    # python proph.py generate-diffs 2016-09-25 /var/repo /shared_volume/generated_diffs
-    date = sys.argv[2]
-    repos = sys.argv[3]
-    output = sys.argv[4]
-    action = GenerateDiffs()
-    action.from_phabricator_repos(repos, output, date)
-    thanks()
-
-elif arg_task == 'generate-diffs-between':
-    # python proph.py generate-diffs 2016-09-01 2016-09-25 /var/repo /shared_volume/generated_diffs
-    start_date = sys.argv[2]
-    end_date = sys.argv[3]
+    # python proph.py generate-diffs 2016-09-05 2016-09-25 /var/repo /shared_volume/generated_diffs
+    # python proph.py generate-diffs -          2016-09-25 /var/repo /shared_volume/generated_diffs
+    # python proph.py generate-diffs 2016-05-05 -          /var/repo /shared_volume/generated_diffs
+    from_date = sys.argv[2]
+    to_date = sys.argv[3]
     repos = sys.argv[4]
     output = sys.argv[5]
     action = GenerateDiffs()
-    action.from_phabricator_repos(repos, output, start_date, end_date)
+    action.from_phabricator_repos(repos, output, from_date, to_date)
     thanks()
 
 else:

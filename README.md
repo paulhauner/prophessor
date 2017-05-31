@@ -239,32 +239,7 @@ Example: `$ python proph.py grant-student-diff-access 1`
 ### generate-diffs
 
 ```
-$ python proph.py generate-diffs <final-submission-date> <phabricator repos dir> <dir to output diff files>
-```
-
-_Requires the RESTful API, Arcanist and access to the Phabricator database_
-
-Scan the `<phabricator repos dir>` and attempt the following on each repository it finds:
- - Obtain the earliest commit on the `master` branch
- - Obtain the latest commit on the `master` branch _before_ the specified `<final submission date>`
- - Create a differential file inside the `<dir to output diff files>` with respect to the two commits mentioned above.
-
-The `<phabricator repos dir>` is the folder in which Phabricator stores it's local repositories.
-Historically, this folder is located at `/var/repo`.
-
-The `<dir to output diff files>` is arbitrary.
-You will most likely specify this folder as the `<directory of diffs>` folder when running the
-`load-diffs` prophessor command.
-
-The date should be specified in this format: `YYYY-MM-DD`
-
-Example: `$ python proph.py generate-diffs 2016-09-27 /var/repo /shared_volume/diffs/`
-
-
-### generate-diffs-between
-
-```
-$ python proph.py generate-diffs-between <release-date> <final-submission-date> <phabricator repos dir> <dir to output diff files>
+$ python proph.py generate-diffs <release-date> <final-submission-date> <phabricator repos dir> <dir to output diff files>
 ```
 
 _Requires the RESTful API, Arcanist and access to the Phabricator database_
@@ -278,12 +253,12 @@ The `<phabricator repos dir>` is the folder in which Phabricator stores it's loc
 Historically, this folder is located at `/var/repo`.
 
 The `<dir to output diff files>` is arbitrary.
-You will most likely specify this folder as the `<directory of diffs>` folder when running the
-`load-diffs` prophessor command.
+You will most likely specify this folder as the `<directory of diffs>` folder when running the `load-diffs` prophessor command.
 
-The date should be specified in this format: `YYYY-MM-DD`
+The dates should be specified in this format: `YYYY-MM-DD`.
+If either date is replaced with a `-`, then the earliest/latest commit will be used.
 
-Example: `$ python proph.py generate-diffs 2016-09-05 2016-09-27 /var/repo /shared_volume/diffs/`
+Example: `$ python proph.py generate-diffs - 2016-09-27 /var/repo /shared_volume/diffs/`
 
 
 ## Notes
