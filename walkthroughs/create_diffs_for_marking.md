@@ -60,11 +60,13 @@ _The `markers.csv` file is used to allocate groups evenly and randomly (randomly
 
 ```
 $ mkdir /shared_volume/folder_for_my_diffs
-$ python proph.py generate-diffs 2012-09-01 /var/repo /shared_volume/folder_for_my_diffs
+$ python proph.py generate-diffs 2012-08-20 2012-09-01 /var/repo /shared_volume/folder_for_my_diffs
 ```
 _The folder you use for your diffs is arbitrary._
 
-_The date is the cut off point for commits. You will get a diff between the very first commit and the last commit before this date._
+_The dates are the start and end point for commits. You will get a diff between the first commit after the first date, and the last commit before the second date._
+
+_Optiionally, you can replace either date with a `-` to get a diff with the earliest and/or latest commit._
 
 _`/var/repo` is where Phabricator stores it's repositories. This is probably the same for you unless you set a different location._
 
