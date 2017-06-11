@@ -33,7 +33,7 @@ class GenerateDiffs():
             print('Working on %s' % repo)
 
             try:
-                p = subprocess.check_output("git diff %s %s" % (from_commit, to_commit), shell=True)
+                p = subprocess.check_output("git diff %s %s" % (from_commit, to_commit), stderr=subprocess.STDOUT, shell=True)
             except subprocess.CalledProcessError as e:
                 if e.returncode == 128:
                     print("%s appears to be empty... skipping." % (repo, ))
