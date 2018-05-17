@@ -273,7 +273,7 @@ class CreateRepos():
             else:
                 print("Skipped: %s" % (group_code,))
 
-    def lockdown_repos(self, csv):
+    def lockdown_repos(self, csv, projectPhid=False):
         """
         lockdown_repos sets custom policies on the repositories, such that only
         project members can view, edit, and push their repository.
@@ -291,9 +291,14 @@ class CreateRepos():
                 if student_project_phid is not None:
                     callsign = repos_util.callsign_from_group_num(group_num)
 
-                    # Sets the repository policy to only the Project members.
-                    policy = phab_policy.create_project_policy([student_project_phid])
-                    phab_repo.set_repository_policy(callsign, policy, policy, policy)
+                    if projectPhid == False:
+                # Sets the repository policy to only the Project members.
+                        policy = phab_policy.create_project_policy([student_project_phid])
+                        phab_repo.set_repository_policy(callsign, policy, policy, policy)
+                    else:
+                        policy = student_project_phid
+                        phab_repo.set_repository_policy(callsign, policy, policy, policy)
+
 
                     print("Repo %s was assigned policy %s (View,Edit,Push) allowing access from student group %s" % (
                         callsign,
@@ -349,6 +354,12 @@ elif arg_task == 'lockdown-repos':
     # python proph.py lockdown-repos students.csv
     action = CreateRepos()
     action.lockdown_repos(sys.argv[2])
+    thanks()
+
+elif arg_task == 'lockdown-repos-project':
+    # python proph.py lockdown-repos-project students.csv
+    action = CreateRepos()
+    action.lockdown_repos(sys.argv[2], True)
     thanks()
 
 elif arg_task == 'load-diffs':
