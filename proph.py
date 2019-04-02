@@ -134,21 +134,19 @@ class Enroll():
             error = phab_user.create(
                 user['User Name'],
                 user['Password'],
-                "%s %s" % (user['First Name'], user['Last Name']),
+                user['Student Name'],
                 user['Email']
             )
             if error:
                 success = False
-                print("Creating user %s %s %s failed. Attention is required." % (
+                print("Creating user %s %s failed. Attention is required." % (
                     user['User Name'],
-                    user['First Name'],
-                    user['Last Name']
+                    user['Student Name']
                 ))
             else:
-                print("User %s (%s %s) successfully created." % (
+                print("User %s (%s) successfully created." % (
                     user['User Name'],
-                    user['First Name'],
-                    user['Last Name']
+                    user['Student Name']
                 ))
         return success
 
