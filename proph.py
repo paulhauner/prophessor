@@ -255,7 +255,7 @@ class CreateRepos():
         for group_code in groups:
             group_num = group_translator.get_group_number_from_group_code(group_code)
 
-            if group_num:
+            if not group_num is None:
                 callsign = repos_util.callsign_from_group_num(group_num)
                 uri = repos_util.generate_uri(PHAB_API_ADDRESS, callsign)
 
@@ -282,7 +282,7 @@ class CreateRepos():
         for group_code in groups:
             group_num = group_translator.get_group_number_from_group_code(group_code)
 
-            if group_num:
+            if not group_num is None:
                 student_project_name = group_translator.build_project_name(group_num, 1, False)
                 student_project_phid = phab_project.get_phid_from_name(student_project_name)
 

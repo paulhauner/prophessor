@@ -63,14 +63,14 @@ class Translate():
     def get_group_number_from_group_code(self, group_code):
         code_regex = re.compile("Group_gc_(\d+)")
         result = code_regex.search(group_code)
-        if result:
+        if not result is None:
             return int(result.group(1))
         else:
             return None
 
     def get_project_name_from_group_code(self, group_code, project_part, is_marking_group):
         group_num = self.get_group_number_from_group_code(group_code)
-        if group_num:
+        if not group_num is None:
             return self.build_project_name(group_num, project_part, is_marking_group)
         else:
             return None
@@ -84,7 +84,7 @@ class Translate():
     def get_group_number_from_project_name(self, project_name):
         code_regex = re.compile("G(\d+)-Project-Part")
         result = code_regex.search(project_name)
-        if result:
+        if not result is None:
             return int(result.group(1))
         else:
             return None
