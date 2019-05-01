@@ -19,7 +19,8 @@ VALUES (%s, %s, 35, %s, 0)"""
 
 diff_callsign_mapping_sql = """SELECT r.callsign, p.name
 FROM default_repository.repository r
-JOIN default_project.project p ON r.editPolicy = p.phid
+JOIN default_policy.policy pol ON r.editPolicy = pol.phid
+JOIN default_project.project p ON pol.rules LIKE CONCAT('%', p.phid, '%')
 """
 
 class Diff():
