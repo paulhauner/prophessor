@@ -92,7 +92,7 @@ class Translate():
     def get_project_number_from_project_name(self, project_name):
         code_regex = re.compile("G(\d+)-Project-Part(\d+)")
         result = code_regex.search(project_name)
-        if result:
+        if not result is None:
             return int(result.group(2))
         else:
             return None

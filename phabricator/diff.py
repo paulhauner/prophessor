@@ -26,7 +26,7 @@ class Diff():
     def get_phid_from_id(self, id):
         phabed_name = "D%s" % id
         result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
-        if result:
+        if not result is None:
             return result[phabed_name]['phid']
 
     def get_all_diffs(self):

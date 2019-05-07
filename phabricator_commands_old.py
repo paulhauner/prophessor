@@ -387,7 +387,7 @@ def create_projects_from_blackboard_csv(csv_reader, icon="policy", color="red"):
         group_code = group["Group Code"]
         code_regex = re.compile("Project_gc_Group_gc_(\d+)")
         result = code_regex.search(group_code)
-        if result:
+        if not result is None:
             group_num = int(result.group(1))
             group_name = "G%02d-Project-Part1" % (group_num,)
             create_project(group_name, icon, color)
