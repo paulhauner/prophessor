@@ -194,7 +194,7 @@ $ python proph.py load-diffs <directory of diffs> <project number>
 _Requires Arcanist and access to the Phabricator database_
 
 **Before running this command you should have already ran `create-marker-groups` and `create-student-groups` so the
-differential revision policies can be effective**
+differential revision policies can be effective. `lockdown-repos` should also be run to get the correct callsign mappings.**
 
 Import all git diff files with `.diff` extension from the `<directory of diffs>` directory and perform the following actions for each file:
 
