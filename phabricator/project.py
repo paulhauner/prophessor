@@ -10,12 +10,12 @@ class Project():
     def get_phid_from_name(self, name):
         phabed_name = "#%s" % name
         result = api_call.template("phid_lookup", "names[]=%s" % phabed_name)
-        if result:
+        if not result is None:
             return result[phabed_name]['phid']
 
     def get_users(self, project_phid):
         result = api_call.template("get_project_details", (project_phid,))
-        if result:
+        if not result is None:
             return result["data"][project_phid]["members"]
 
     def add_user(self, user_phid, project_phid):
