@@ -2,30 +2,30 @@ import selenium
 import time
 import sys
 import csv
+import getpass
 
 from selenium import webdriver
 
 #------------------------------------------------
-default_target = "https://canvas.sydney.edu.au/courses/14200/groups#tab-6151"
+default_target = "https://canvas.sydney.edu.au/courses/14200/groups"
 #------------------------------------------------
 # Useage: 
 # python canvas_group_scraper.py <target groups page>
+# Requires gecko driver
 #------------------------------------------------
 
 
 def scrape(target):
 
     driver = webdriver.Firefox()
-    groups = {}
-
-
+    
     print("Canvas login creds:")
 
     print("Loading login portal")
     driver.get("https://canvas.sydney.edu.au/")
 
     username = input("Enter your canvas username: ")
-    password = input("Enter your canvas password: ")
+    password = getpass.getpass(prompt="Enter your canvas password: ")
 
     print("Logging in")
 
@@ -48,39 +48,62 @@ def scrape(target):
     print("Logged in!")
     driver.get(target)
 
-    for group in range(1, 50):
-        try:
-            # Click to expand group header
-            group_xpath = '//*[@class="span9 groups"]//div//ul//li[{group}]//div//div//a'
-            group_heading = driver.find_element_by_xpath(group_xpath.format(group=group))
-            group_name = group_heading.text
-            group_heading.click()
+    category_selectors = driver.find_elements_by_class_name("group-category-tab-link")
 
-            groups[group_name] = []
-
-            # Get members from group
-            for member in range(1,4):
-                try:
-                    member_xpath = '//*[@class="span9 groups"]//div//ul//li[{group}]//div[2]//ul//li[{member}]//div'
-                    member_name = driver.find_element_by_xpath(member_xpath.format(group=group, member=member)).text 
-
-                    groups[group_name].append(member_name)
-                except:
-                    print("Member not found")
-        except:
-            pass
-
-        print("Group: {} contains {}".format(group_name, groups[group_name].__repr__()) )
+    # Skip the 'everyone' tab
+    for category_selector in category_selectors:
+        print("Scraping Group Category...")
+        category_selector.click()
+        time.sleep(2)
+        groups = extract_groups(driver)
+        csv_groups(groups, category_selector.text)
 
     print("Scraping finished, closing web driver.")
     driver.close()
+
+
+def extract_groups(driver):
+
+    # Click to expand group header
+
+    groups = {}
+
+    group_selectors = driver.find_elements_by_class_name('group-name')
+    tabbed_group_selectors = [i for i in group_selectors if i.text != ''] 
+
+    group_names = [i.text for i in group_selectors if i.text != ''] 
+
+
+    # Need to click each of the groups
+    for i in tabbed_group_selectors:
+
+        group_member_cursor = len(driver.find_elements_by_class_name('group-user-name'))
+        print(group_member_cursor)
+
+        i.click()
+        # Waiting for the response
+        time.sleep(0.3)
+
+        group_name = i.text
+        groups[group_name] = []
+
+        group_members = driver.find_elements_by_class_name('group-user-name')
+        for j in group_members[group_member_cursor:]:
+
+            groups[group_name].append(j.text)               
+
+        print("Group: {} contains {}".format(group_name, groups[group_name].__repr__()))
+
     return groups
+
+
+
 
 
 #------------------------------------------------
 
-def csv_groups(groups):
-    with open('elec5616_groups.csv', 'w') as groups_file:
+def csv_groups(groups, group_file):
+    with open('elec5616_groups_{}.csv'.format(group_file), 'w') as groups_file:
         csv_writer = csv.writer(groups_file) 
         for count, group in enumerate(groups):
             if len(groups[group]) > 0:
@@ -98,7 +121,8 @@ if __name__ == '__main__':
     else:
         target_url = sys.argv[1]
 
+    scrape(target_url)
 
-    groups = scrape(target_url)
-    csv_groups(groups)
-    print("Finished!")
+print("Finished!")
+
+
