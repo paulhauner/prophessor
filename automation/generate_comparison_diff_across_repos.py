@@ -22,20 +22,29 @@ class GenerateRepoComparison():
         repos = os.listdir(target_dir)
 
         empty_repos = set()
+        active_repos = set()
 
         def is_repo_empty(repo):
-            if empty_repos.is_subset(repo):
+            if repo in empty_repos:
                 return True
+            elif repo in active_repos:
+                return False
+
+            prev_cwd = os.getcwd()
             try:
+                os.chdir(os.path.join(target_dir, repo))
                 p = subprocess.check_output("git diff %s %s" % (from_commit, to_commit), shell=True)
             except subprocess.CalledProcessError as e:
                 if e.returncode == 128:
                     print("%s appears to be empty... skipping." % (repo, ))
                     empty_repos.add(repo)
+                    os.chdir(prev_cwd)
                     return True
                 else:
                     raise e
             else:
+                active_repos.add(repo)
+                os.chdir(prev_cwd)
                 return False
 
         for repo_i, repo in enumerate(repos):

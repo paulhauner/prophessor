@@ -427,7 +427,7 @@ elif arg_task == 'generate-repo-comparison':
     repos = sys.argv[2]
     output = sys.argv[3]
     action = GenerateRepoComparison()
-    action.from_phabricator_repos(repose, output)
+    action.from_phabricator_repos(repos, output)
     thanks()
 
 else:
