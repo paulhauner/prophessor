@@ -4,6 +4,7 @@ from local_settings import *
 from automation.group_membership import load as load_group_membership
 from automation.group_membership import translate as group_translator
 from automation.generate_diffs_from_phab_repos import GenerateDiffs
+from automation.generate_comparison_diff_across_repos import GenerateRepoComparison
 from automation.diffs import diffs as submitted_diffs
 from automation.repos import repos as repos_util
 from phabricator.project import project as phab_project
@@ -418,6 +419,15 @@ elif arg_task == 'generate-diffs':
     output = sys.argv[4]
     action = GenerateDiffs()
     action.from_phabricator_repos(repos, output, date)
+    thanks()
+
+
+elif arg_task == 'generate-repo-comparison':
+    # python proph.py generate-repo-comparison /var/repo /shared_volume/generated_diffs
+    repos = sys.argv[2]
+    output = sys.argv[3]
+    action = GenerateRepoComparison()
+    action.from_phabricator_repos(repose, output)
     thanks()
 
 else:
